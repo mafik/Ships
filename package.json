@@ -1,0 +1,25 @@
+{
+  "name": "Ships",
+  "version": "0.1.0",
+  "description": "Pirate simulator.",
+  "main": "server.js",
+  "dependencies": {
+    "node-static": "~0.6.9",
+    "socket.io": "~0.9.14"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node server.js",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mafik/Ships.git"
+  },
+  "keywords": [
+    "game",
+    "ships"
+  ],
+  "author": "Grzegorz Graczyk, Marek Rogalski, Bartosz Ziobrowski",
+  "license": "GNU GPLv3"
+}
