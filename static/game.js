@@ -16,9 +16,21 @@ socket.on('update', function(msg) {
 	treasures = msg.treasures;
 	pirates = msg.pirates;
 	corsairs = msg.corsairs;
+	if(localStorage.player_id in pirates) {
+		me = pirates[localStorage.player_id];
+	}
+});
+
+socket.on('add_pirate', function(pirate) {
+	pirates[pirate.id] = pirate;
+});
+
+socket.on('remove_pirate', function(pirate) {
+	delete pirates[pirate.id];
 });
 
 var treasures = {}, pirates = {}, corsairs = {};
+var me;
 
 var canvas = document.getElementById('canvas');
 canvas.style.background = '#106';
@@ -49,19 +61,7 @@ var circle = function(obj) {
 	ctx.restore();
 }
 
-var tick = function(time) {
-	animate(tick); // schedule next frame
-
-	time = time / 1000; // animation time
-	var now = (new Date).getTime() / 1000; // calendar time
-
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-	ctx.save();
-	ctx.translate(canvas.width / 2, canvas.height / 2);
-	ctx.rotate(Math.sin(time) / 20);
-	ctx.translate(-canvas.width / 2, -canvas.height / 2);
-
+var draw_world = function() {
 
 	ctx.fillStyle = 'rgb(255, 255, 0)';
 	for(var key in treasures) {
@@ -77,6 +77,68 @@ var tick = function(time) {
 	for(var key in pirates) {
 		circle(pirates[key]);
 	}
+
+};
+
+var camera = {x: 0, y: 0};
+camera.update = function(dt) {
+	if(me) {
+		if(me.x < camera.x - 500) {
+			camera.x -= 1000;
+		}
+		if(me.x > camera.x + 500) {
+			camera.x += 1000;
+		}
+		if(me.y < camera.y - 500) {
+			camera.y -= 1000;
+		}
+		if(me.y > camera.y + 500) {
+			camera.y += 1000;
+		}
+		var alpha = Math.pow(.5, dt);
+		camera.x = (1 - alpha) * me.x + alpha * camera.x;
+		camera.y = (1 - alpha) * me.y + alpha * camera.y;
+	}
+};
+
+var current_time = 0;
+var tick = function(time) {
+	animate(tick); // schedule next frame
+
+	time = time / 1000; // animation time
+	var now = (new Date).getTime() / 1000; // calendar time
+
+	camera.update(time - current_time);
+
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+	ctx.save();
+	ctx.translate(canvas.width / 2, canvas.height / 2);
+	ctx.rotate(Math.sin(time) / 20);
+
+	ctx.fillStyle = 'black';
+	ctx.fillRect(-5, -5, 10, 10);
+
+	ctx.translate(-camera.x, -camera.y);
+
+	ctx.translate(-1000, -1000);
+	draw_world();
+	ctx.translate(1000, 0);
+	draw_world();
+	ctx.translate(1000, 0);
+	draw_world();
+	ctx.translate(-2000, 1000);
+	draw_world();
+	ctx.translate(1000, 0);
+	draw_world();
+	ctx.translate(1000, 0);
+	draw_world();
+	ctx.translate(-2000, 1000);
+	draw_world();
+	ctx.translate(1000, 0);
+	draw_world();
+	ctx.translate(1000, 0);
+	draw_world();
 	
 	ctx.restore();
 	current_time = time;
