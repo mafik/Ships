@@ -39,7 +39,7 @@ io.sockets.on('connection', function (socket) {
 		};
 
 		
-		for( var key in pirates ) {
+		for( var key in players ) {
 			players[key].socket.emit('add_pirate', pirates[player] );
 		}
 
@@ -55,7 +55,7 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	socket.on('disconnect', function(data) {
-		if( data in pirates ) {
+		if( data in players ) {
 			delete pirates[player];
 		}
 
