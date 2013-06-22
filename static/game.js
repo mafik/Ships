@@ -1,4 +1,6 @@
 
+var world_size = 2000;
+
 var uid = function() {
 	return 'xxxxxx'.replace(/x/g, function() {
 		return (Math.random() * 16).toString(16)[0];
@@ -21,12 +23,8 @@ socket.on('update', function(msg) {
 	}
 });
 
-socket.on('add_pirate', function(pirate) {
-	pirates[pirate.id] = pirate;
-});
-
-socket.on('remove_pirate', function(pirate) {
-	delete pirates[pirate.id];
+socket.on('success', function() {
+	new Audio('collectcoin.ogg').play();
 });
 
 var treasures = {}, pirates = {}, corsairs = {};
@@ -83,19 +81,19 @@ var draw_world = function() {
 var camera = {x: 0, y: 0};
 camera.update = function(dt) {
 	if(me) {
-		if(me.x < camera.x - 500) {
-			camera.x -= 1000;
+		if(me.x < camera.x - world_size / 2) {
+			camera.x -= world_size;
 		}
-		if(me.x > camera.x + 500) {
-			camera.x += 1000;
+		if(me.x > camera.x + world_size / 2) {
+			camera.x += world_size;
 		}
-		if(me.y < camera.y - 500) {
-			camera.y -= 1000;
+		if(me.y < camera.y - world_size / 2) {
+			camera.y -= world_size;
 		}
-		if(me.y > camera.y + 500) {
-			camera.y += 1000;
+		if(me.y > camera.y + world_size / 2) {
+			camera.y += world_size;
 		}
-		var alpha = Math.pow(.5, dt);
+		var alpha = Math.pow(.2, dt);
 		camera.x = (1 - alpha) * me.x + alpha * camera.x;
 		camera.y = (1 - alpha) * me.y + alpha * camera.y;
 	}
@@ -121,37 +119,50 @@ var tick = function(time) {
 
 	ctx.translate(-camera.x, -camera.y);
 
-	ctx.translate(-1000, -1000);
+	ctx.translate(-world_size, -world_size);
 	draw_world();
-	ctx.translate(1000, 0);
+	ctx.translate(world_size, 0);
 	draw_world();
-	ctx.translate(1000, 0);
+	ctx.translate(world_size, 0);
 	draw_world();
-	ctx.translate(-2000, 1000);
+	ctx.translate(-world_size * 2, world_size);
 	draw_world();
-	ctx.translate(1000, 0);
+	ctx.translate(world_size, 0);
 	draw_world();
-	ctx.translate(1000, 0);
+	ctx.translate(world_size, 0);
 	draw_world();
-	ctx.translate(-2000, 1000);
+	ctx.translate(-world_size * 2, world_size);
 	draw_world();
-	ctx.translate(1000, 0);
+	ctx.translate(world_size, 0);
 	draw_world();
-	ctx.translate(1000, 0);
+	ctx.translate(world_size, 0);
 	draw_world();
 	
 	ctx.restore();
+
+
+	// Joystick
+	if(me && navigator.webkitGetGamepads) {
+		var pad = navigator.webkitGetGamepads()[0];
+		if(pad) {
+			socket.emit('move', { 
+				vx: pad.axes[0],
+				vy: pad.axes[1]
+			});
+			// console.log('move', pad.axes[0], pad.axes[1]);
+		}
+	}
+
+
 	current_time = time;
 };
 animate(tick);
 
-canvas.addEventListener('mousedown', function(e) {
-	// TODO...
-}, false);
+
 
 onresize = function(e) {
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
-
 };
+
 onresize();
