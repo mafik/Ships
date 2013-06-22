@@ -15,7 +15,17 @@ var treasures = {};
 var pirates = {};
 var corsairs = {};
 
+treasures[5] = { x: Math.random() * 1000, y: Math.random() * 1000, alpha: Math.random() * 2 * Math.PI };
+
 var players = {};
+
+function update_player(id) {
+		players[id].socket.emit('update', {
+			pirates: pirates,
+			corsairs: corsairs,
+			treasures: treasures
+		});
+}
 
 io.sockets.on('connection', function (socket) {
     var player = undefined;
@@ -24,29 +34,33 @@ io.sockets.on('connection', function (socket) {
 	console.log('connected ' + address);
 
 	socket.on('hello', function(data) {
-		if( data in pirates ) {
+
+		if( data in players ) {
+			console.log('' + data + ': hello invalid');
 			socket.disconnect();
 			return;
 		}
 
 		player = data;
 
+		console.log('' + player + ': hello');
+
 		pirates[player] = {
 			id: player,
-			x: 50,
-			y: 50,
+			x: 1000*Math.random(),
+			y: 1000*Math.random(),
 			alpha: 0
 		};
-
-		
-		for( var key in players ) {
-			players[key].socket.emit('add_pirate', pirates[player] );
-		}
 
 		players[player] = {
 			address: address,
 			socket: socket
 		};
+		
+		for( var key in players ) {
+			update_player(key);
+		}
+
 	});
 
 	socket.on('message', function(data) {
@@ -55,12 +69,15 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	socket.on('disconnect', function(data) {
-		if( data in players ) {
+		console.log('' + player + ': disconnected');
+
+		if( player in players ) {
 			delete pirates[player];
+			delete players[player];
 		}
 
-		for( var key in pirates ) {
-			players[key].socket.emit('remove_pirate', player );
+		for( var key in players ) {
+			update_player(key);
 		}
 	} );
 

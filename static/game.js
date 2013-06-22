@@ -1,6 +1,6 @@
 
 var uid = function() {
-	return 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'.replace(/x/g, function() {
+	return 'xxxxxx'.replace(/x/g, function() {
 		return (Math.random() * 16).toString(16)[0];
 	});
 };
@@ -19,12 +19,6 @@ socket.on('update', function(msg) {
 });
 
 var treasures = {}, pirates = {}, corsairs = {};
-
-var addRandom = function(arr) {
-	for(var i = 0; i < 5; ++i) {
-		arr[uid()] = { x: Math.random() * canvas.width, y: Math.random() * canvas.height, alpha: Math.random() * 2 * Math.PI };
-	}
-};
 
 var canvas = document.getElementById('canvas');
 canvas.style.background = '#106';
@@ -96,10 +90,6 @@ canvas.addEventListener('mousedown', function(e) {
 onresize = function(e) {
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
-
-	addRandom(treasures);
-	addRandom(pirates);
-	addRandom(corsairs);
 
 };
 onresize();
