@@ -18,6 +18,14 @@ socket.on('update', function(msg) {
 	corsairs = msg.corsairs;
 });
 
+socket.on('add_pirate', function(pirate)) {
+	pirates[pirate.id] = pirate;
+};
+
+socket.on('remove_pirate', function(pirate)) {
+	delete pirates[pirate.id];
+};
+
 var treasures = {}, pirates = {}, corsairs = {};
 
 var addRandom = function(arr) {
