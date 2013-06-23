@@ -96,7 +96,6 @@ var corsairIcon = function(obj){
 	//	canvas.width = canvasWidth;
 	//	canvas.height = canvasHeight;
 	  
-	ctx.lineWidth = lineWidth;
 	var move = (game.now - game.updatedAt)/16;
 	ctx.translate(obj.x + move*obj.vx, obj.y + move*obj.vy);
 	ctx.rotate(mrot || 0);
@@ -108,8 +107,7 @@ var corsairIcon = function(obj){
     ctx.moveTo(0.35*canvasWidth, lineWidth);
 	ctx.lineTo(0.65*canvasWidth, lineWidth);
     ctx.quadraticCurveTo(0.85*canvasWidth, 0.4*canvasHeight , 0.5*canvasWidth, canvasHeight);
-	ctx.moveTo(0.35*canvasWidth, lineWidth);
-	ctx.quadraticCurveTo(0.15*canvasWidth, 0.4*canvasHeight , 0.5*canvasWidth, canvasHeight);
+	ctx.quadraticCurveTo(0.15*canvasWidth, 0.4*canvasHeight , 0.35*canvasWidth, lineWidth);
 	
 	ctx.closePath();
 	
@@ -117,8 +115,11 @@ var corsairIcon = function(obj){
 	grd.addColorStop(0,'#2E0F00');
 	grd.addColorStop(1,'#CC6600');
 	
-    ctx.strokeStyle = 'black';
-	ctx.fillStyle = grd;	
+    ctx.strokeStyle = '#2E0F00';
+	ctx.fillStyle = grd;
+	ctx.lineWidth = 5;
+	ctx.lineJoin = 'miter';
+	ctx.miterLimit=5;
 	ctx.stroke();
     ctx.fill();
 	
@@ -126,30 +127,32 @@ var corsairIcon = function(obj){
 	ctx.beginPath();
 	
 	ctx.moveTo(0.45*canvasWidth, 0.3*canvasHeight);
-	ctx.lineTo(0.05*canvasWidth, 0.45*canvasHeight + Math.sin(current_time) * 10);
+	ctx.lineTo(0.05*canvasWidth, 0.45*canvasHeight + Math.sin(current_time * 2) * 10);
 	
 	ctx.moveTo(0.45*canvasWidth, 0.4*canvasHeight);
-	ctx.lineTo(0.05*canvasWidth, 0.55*canvasHeight + Math.sin(current_time) * 10);
+	ctx.lineTo(0.05*canvasWidth, 0.55*canvasHeight + Math.sin(current_time * 2) * 10);
 	
 	ctx.moveTo(0.45*canvasWidth, 0.5*canvasHeight);
-	ctx.lineTo(0.05*canvasWidth, 0.65*canvasHeight + Math.sin(current_time) * 10);
+	ctx.lineTo(0.05*canvasWidth, 0.65*canvasHeight + Math.sin(current_time * 2) * 10);
 	
 	ctx.moveTo(0.45*canvasWidth, 0.6*canvasHeight);
-	ctx.lineTo(0.05*canvasWidth, 0.75*canvasHeight + Math.sin(current_time) * 10);
+	ctx.lineTo(0.05*canvasWidth, 0.75*canvasHeight + Math.sin(current_time * 2) * 10);
 	
 	ctx.moveTo(0.55*canvasWidth, 0.3*canvasHeight);
-	ctx.lineTo(0.95*canvasWidth, 0.45*canvasHeight + Math.sin(current_time) * 10);
+	ctx.lineTo(0.95*canvasWidth, 0.45*canvasHeight + Math.sin(current_time * 2) * 10);
 	                                 
 	ctx.moveTo(0.55*canvasWidth, 0.4*canvasHeight);
-	ctx.lineTo(0.95*canvasWidth, 0.55*canvasHeight + Math.sin(current_time) * 10);
+	ctx.lineTo(0.95*canvasWidth, 0.55*canvasHeight + Math.sin(current_time * 2) * 10);
 	                                 
 	ctx.moveTo(0.55*canvasWidth, 0.5*canvasHeight);
-	ctx.lineTo(0.95*canvasWidth, 0.65*canvasHeight + Math.sin(current_time) * 10);
+	ctx.lineTo(0.95*canvasWidth, 0.65*canvasHeight + Math.sin(current_time * 2) * 10);
 	                                 
 	ctx.moveTo(0.55*canvasWidth, 0.6*canvasHeight);
-	ctx.lineTo(0.95*canvasWidth, 0.75*canvasHeight + Math.sin(current_time) * 10);
+	ctx.lineTo(0.95*canvasWidth, 0.75*canvasHeight + Math.sin(current_time * 2) * 10);
 	
 	ctx.closePath();
+
+	ctx.lineWidth = 3;
 
 	ctx.stroke();
 	
@@ -157,13 +160,13 @@ var corsairIcon = function(obj){
 	ctx.beginPath();
 	
 	ctx.moveTo(0, 0.2*canvasHeight);
-	ctx.quadraticCurveTo(0.5*canvasWidth, 0.3*canvasHeight, canvasWidth, 0.2*canvasHeight);
-	ctx.quadraticCurveTo(0.5*canvasWidth, 0.8*canvasHeight, 0, 0.2*canvasHeight);
+	ctx.quadraticCurveTo(0.5*canvasWidth, 0.3*canvasHeight + Math.sin(current_time * 5) * 10, canvasWidth, 0.2*canvasHeight);
+	ctx.quadraticCurveTo(0.5*canvasWidth, 0.8*canvasHeight + Math.sin(current_time * 5 + 0.5) * 10, 0, 0.2*canvasHeight);
 	
 	ctx.closePath();
 	
 	ctx.fillStyle = 'white';
-	ctx.stroke();
+	// ctx.stroke();
     ctx.fill();
 	}
 
@@ -178,7 +181,13 @@ var treasure_icon = function(obj){
 	ctx.lineWidth = lineWidth;
 	
 	ctx.translate(obj.x + move*obj.vx, obj.y + move*obj.vy);
+
+	ctx.rotate(Math.sin(current_time + obj.x) / 4);
+
 	ctx.translate(-canvasWidth/2,-canvasHeight/2);
+
+
+
 	//DIAMENT
 	ctx.beginPath();
 	
@@ -192,7 +201,9 @@ var treasure_icon = function(obj){
 	ctx.closePath();
 	
 	ctx.strokeStyle = 'black';
-	ctx.fillStyle = '#E60000';	
+	ctx.fillStyle = '#E60000';
+	var v = Math.round(Math.sin(current_time * 5 + obj.y / 100) * 255);
+	ctx.fillStyle = 'rgb(250, ' + v + ', ' + v + ')';
 	ctx.stroke();
     ctx.fill();
 	
@@ -369,11 +380,10 @@ var tick = function(time) {
 				}
 			}
 			last_pad = clone(pad);
-			mvx = 0;
-			mvy = 0;
-			console.log(pad.axes[0]);
-			console.log(pad.axes[1]);
-						
+
+			if(Math.abs(pad.axes[1]) + Math.abs(pad.axes[0]) > 0.1)
+				mrot = Math.atan2(pad.axes[0], -pad.axes[1]);
+
 			socket.emit('move', { 
 				vx: pad.axes[0],
 				vy: pad.axes[1],
@@ -418,11 +428,10 @@ onkeydown = function(e) {
 		}
 		if(left_key) mrot -= treshold_rotate;
 		if(right_key) mrot += treshold_rotate;
-		if(mrot > Math.PI * 2 || mrot < -1 * Math.PI * 2)
-			mrot = 0.0;
+		mrot = ( mrot + 2 * Math.PI ) % (2 * Math.PI);
 		mvy = 0;	
 		mvx = 0;
-		console.log(treshold_rotate);
+		//console.log(treshold_rotate);
 		if(up_key){ 
 			mvy -= Math.cos(mrot);
 			mvx -= -1*Math.sin(mrot);
