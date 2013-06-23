@@ -50,7 +50,7 @@ body {
   bottom: 0px;
   right: 5px;
   color: #463616;
-  background:  #fff4ac;
+  background: #fff4ac;
 }
 .price:before {
   content: '$ ';
@@ -72,16 +72,16 @@ audio {
 </style>
 <body>
 <canvas id="canvas"></canvas>
-<audio src="DoKashiteru_-_Recommencer.mp3" autoplay controls volume=50></audio>
 <div id="points">0</div>
 <div id="fps-meter">0 ms</div>
 <div id="power-ups">
   <div onclick="powerup(4)" title="Sztuka wojenna"><div class="price">1000</div><img src="go.png" /></div>
-  <div onclick="powerup(3)" title="Lembasy"><div class="price">700</div><img src="leaf.png" /></div>
-  <div onclick="powerup(2)" title="Gong wojenny"><div class="price">500</div><img src="gong.png" /></div>
+  <div onclick="powerup(3)" title="Gong wojenny"><div class="price">7500</div><img src="gong.png" /></div>
+  <div onclick="powerup(2)" title="Lembasy"><div class="price">700</div><img src="leaf.png" /></div>
   <div onclick="powerup(1)" title="Strzał!"><div class="price">100</div><img src="shoot.png" /></div>
   <div onclick="powerup(0)" title="Dobry wiatr!"><div class="price">100</div><img src="wind.png" /></div>
 </div>
+<audio src="DoKashiteru_-_Recommencer.mp3" autoplay controls volume=50></audio>
 
 <script src="socket.io/socket.io.js"></script>
 <script src="diff.js"></script>

@@ -8,6 +8,12 @@ var app = require('http').createServer(function (req, res) {
 var speed_length = 200;
 var speed_cost = 100;
 
+var scary = {
+	cost: 7500,
+	time: 3500,
+	pirates: {}
+};
+
 var diff = require('./static/diff.js');
 
 var world_size = 2048;
@@ -17,6 +23,24 @@ var uid = function() {
 		return (Math.random() * 16).toString(16)[0];
 	});
 };
+
+function distance(a, b) {
+		var dx = a.x - b.x;
+		if(Math.abs(dx + world_size) < Math.abs(dx)) {
+			dx += world_size;
+		} else if(Math.abs(dx - world_size) < Math.abs(dx)) {
+			dx -= world_size;
+		}
+		var dy = a.y - b.y;
+		if(Math.abs(dy + world_size) < Math.abs(dy)) {
+			dy += world_size;
+		} else if(Math.abs(dy - world_size) < Math.abs(dy)) {
+			dy -= world_size;
+		}
+
+		var l = Math.sqrt(dx*dx + dy*dy);
+		return { length: l, dx: dx, dy: dy };
+}
 
 var io = require('socket.io').listen(app);
 io.set('log level', 1);
@@ -43,6 +67,13 @@ var players = {};
 
 setInterval(function() {
 	var key, key2, key3, pirate, treasure, player, corsair;
+
+	var now = (new Date).getTime();
+	for( var run_from in scary.pirates ) {
+		if( scary.pirates[run_from] < now )
+			delete scary.pirates[run_from];
+	}
+
 	for(key in pirates) {
 		pirate = pirates[key];
 		var vx = Number(pirate.vx);
@@ -109,26 +140,46 @@ setInterval(function() {
 			continue;
 		}
 
-		var dx = pirate.x - corsair.x;
-		if(Math.abs(dx + world_size) < Math.abs(dx)) {
-			dx += world_size;
-		} else if(Math.abs(dx - world_size) < Math.abs(dx)) {
-			dx -= world_size;
-		}
-		var dy = pirate.y - corsair.y;
-		if(Math.abs(dy + world_size) < Math.abs(dy)) {
-			dy += world_size;
-		} else if(Math.abs(dy - world_size) < Math.abs(dy)) {
-			dy -= world_size;
+		var run = [];
+		for( var run_from in scary.pirates ) {
+			var Z = distance( corsair, pirates[run_from] );
+			if( Z.length < 100 ) {
+				var p = 125 / Z.length / Z.length;
+				run.push( [ p * Z.dx, p * Z.dy ] );
+			}
 		}
 
-		var l = Math.sqrt(dx*dx + dy*dy);
-		dx /= l;
-		dy /= l;
-		
-		var alpha = Math.atan2(dy, dx) + corsair.tangent;
-		dx = Math.cos(alpha) * corsair.speed;
-		dy = Math.sin(alpha) * corsair.speed;
+		var dx, dy;
+
+		if( run.length == 0 ) {
+			dx = pirate.x - corsair.x;
+			if(Math.abs(dx + world_size) < Math.abs(dx)) {
+				dx += world_size;
+			} else if(Math.abs(dx - world_size) < Math.abs(dx)) {
+				dx -= world_size;
+			}
+			dy = pirate.y - corsair.y;
+			if(Math.abs(dy + world_size) < Math.abs(dy)) {
+				dy += world_size;
+			} else if(Math.abs(dy - world_size) < Math.abs(dy)) {
+				dy -= world_size;
+			}
+	
+			var l = Math.sqrt(dx*dx + dy*dy);
+			dx /= l;
+			dy /= l;
+
+			var alpha = Math.atan2(dy, dx) + corsair.tangent;
+			dx = Math.cos(alpha) * corsair.speed;
+			dy = Math.sin(alpha) * corsair.speed;
+		} else {
+			dx = 0;
+			dy = 0;
+			for( var i in run ) {
+				dx += run[i][0];
+				dy += run[i][1];
+			}
+		}
 
 		corsair.x += dx;
 		corsair.y += dy;
@@ -258,6 +309,16 @@ io.sockets.on('connection', function (socket) {
 		pirates[player].points -= speed_cost;
 		pirates[player].speed_buff = speed_length;
 		players[player].socket.emit('wind');
+	});
+
+	socket.on('scary', function() {
+		if(pirates[player].points < scary.cost) {
+			players[player].socket.emit('scary_fail');
+			return;
+		}
+		pirates[player].points -= scary.cost;
+		scary.pirates[player] = (new Date).getTime() + scary.time;
+		players[player].socket.emit('scary');
 	});
 
 });

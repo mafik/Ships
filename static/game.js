@@ -85,6 +85,14 @@ socket.on('wind_fail', function() {
 	new Audio('wind_fail.ogg').play();
 });
 
+socket.on('scary', function() {
+	new Audio('gong.ogg').play();
+});
+
+socket.on('scary_fail', function() {
+	new Audio('tong.ogg').play();
+});
+
 var game = { treasures: {}, pirates: {}, corsairs: {}, updatedAt: 0, now: 0 };
 var me;
 var treshold_rotate=0.1;
@@ -383,28 +391,23 @@ var treasure_icon = function(obj){
 	
 	var move = (game.now - game.updatedAt)/16;
     var lineWidth = 2;
-	var canvasWidth = 50;
-	var canvasHeight = 0.8*canvasWidth;
+	var w = 50;
+	var h = 0.8*w;
 
 	ctx.lineWidth = lineWidth;
-	
 	ctx.translate(obj.x + move*obj.vx, obj.y + move*obj.vy);
-
 	ctx.rotate(Math.sin(current_time + obj.x) / 4);
-
-	ctx.translate(-canvasWidth/2,-canvasHeight/2);
-
-
+	ctx.translate(-w/2,-h/2);
 
 	//DIAMENT
 	ctx.beginPath();
 	
-    ctx.moveTo(0.25*canvasWidth, lineWidth);
-    ctx.lineTo(0.75*canvasWidth, lineWidth);
-	ctx.lineTo(canvasWidth, 0.25*canvasHeight);
-	ctx.lineTo(0.5*canvasWidth, canvasHeight);
-	ctx.lineTo(0, 0.25*canvasHeight);
-	ctx.lineTo(0.25*canvasWidth, lineWidth);
+    ctx.moveTo(0.25*w, lineWidth);
+    ctx.lineTo(0.75*w, lineWidth);
+	ctx.lineTo(w, 0.25*h);
+	ctx.lineTo(0.5*w, h);
+	ctx.lineTo(0, 0.25*h);
+	ctx.lineTo(0.25*w, lineWidth);
 	
 	ctx.closePath();
 	
@@ -417,26 +420,25 @@ var treasure_icon = function(obj){
 	
 	ctx.beginPath();
 	
-    ctx.moveTo(0.25*canvasWidth, lineWidth);
-    ctx.lineTo(0.75*canvasWidth, lineWidth);
-	ctx.lineTo(canvasWidth, 0.25*canvasHeight);
-	ctx.lineTo(0.5*canvasWidth, canvasHeight);
-	ctx.lineTo(0, 0.25*canvasHeight);
-	ctx.lineTo(0.25*canvasWidth, lineWidth);
+    ctx.moveTo(0.25*w, lineWidth);
+    ctx.lineTo(0.75*w, lineWidth);
+	ctx.lineTo(w, 0.25*h);
+	ctx.lineTo(0.5*w, h);
+	ctx.lineTo(0, 0.25*h);
+	ctx.lineTo(0.25*w, lineWidth);
 	
-	ctx.moveTo(0, 0.25*canvasHeight);
-	ctx.lineTo(0.30*canvasWidth, 0.35*canvasHeight);
-	ctx.lineTo(0.70*canvasWidth, 0.35*canvasHeight);
-	ctx.lineTo(canvasWidth, 0.25*canvasHeight);
-    ctx.lineTo(0.75*canvasWidth, lineWidth);
-	ctx.lineTo(0.25*canvasWidth, lineWidth);
-
+	ctx.moveTo(0, 0.25*h);
+	ctx.lineTo(0.30*w, 0.35*h);
+	ctx.lineTo(0.70*w, 0.35*h);
+	ctx.lineTo(w, 0.25*h);
+    ctx.lineTo(0.75*w, lineWidth);
+	ctx.lineTo(0.25*w, lineWidth);
 	
-    ctx.moveTo(0.35*canvasWidth, lineWidth);
-	ctx.lineTo(0.30*canvasWidth, 0.35*canvasHeight);
-	ctx.lineTo(0.5*canvasWidth, canvasHeight);
-	ctx.lineTo(0.70*canvasWidth, 0.35*canvasHeight);
-	ctx.lineTo(0.60*canvasWidth, lineWidth);
+    ctx.moveTo(0.35*w, lineWidth);
+	ctx.lineTo(0.30*w, 0.35*h);
+	ctx.lineTo(0.5*w, h);
+	ctx.lineTo(0.70*w, 0.35*h);
+	ctx.lineTo(0.60*w, lineWidth);
 		
 	ctx.closePath();
 	
@@ -444,13 +446,7 @@ var treasure_icon = function(obj){
 	ctx.fillStyle = '#CC0000';	
 	ctx.stroke();
     ctx.fill();	
-	
-
-
-
 	ctx.restore();
-
-
 }
 
 var draw_pirate = function(obj) {
@@ -464,6 +460,7 @@ var draw_world = function() {
 	
 	ctx.fillStyle = 'rgb(255, 255, 0)';
 	for(var key in game.treasures) {
+		circle(game.treasures[key]);
 		treasure_icon(game.treasures[key]);
 	}
 
@@ -544,6 +541,38 @@ var tick = function(time) {
 		ctx.fillRect(-1000, -1000, 5000, 5000);
 	}
 
+	var draw_world_horizontal = function() {
+		draw_world();
+		if(camera.x + canvas.width / 2 > world_size) {
+			ctx.save();
+			ctx.translate(world_size, 0);
+			draw_world();
+			ctx.restore();
+		}
+		if(camera.x - canvas.width / 2 < 0) {
+			ctx.save();
+			ctx.translate(-world_size, 0);
+			draw_world();
+			ctx.restore();
+		}
+	}
+
+	draw_world_horizontal();
+	if(camera.y + canvas.height / 2 > world_size) {
+		ctx.save();
+		ctx.translate(0, world_size);
+		draw_world_horizontal();
+		ctx.restore();
+	}
+	if(camera.y - canvas.height / 2 < 0) {
+		ctx.save();
+		ctx.translate(0, -world_size);
+		draw_world_horizontal();
+		ctx.restore();
+	}
+
+	
+/*
 	ctx.translate(-world_size, -world_size);
 	draw_world();
 	ctx.translate(world_size, 0);
@@ -562,7 +591,7 @@ var tick = function(time) {
 	draw_world();
 	ctx.translate(world_size, 0);
 	draw_world();
-	
+*/	
 	ctx.restore();
 
 	draw_wind_particles();
@@ -629,7 +658,9 @@ var powerup = function(number) {
 	if(number == 0) {
 		powerup_wind();
 	}
-	// TODO: reszta powerupów
+	if( number == 3 ) {
+		socket.emit('scary');
+	}
 };
 
 onkeydown = function(e) {
