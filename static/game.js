@@ -1,5 +1,6 @@
 
 var world_size = 2000;
+var fps = 24;
 
 var uid = function() {
 	return 'xxxxxx'.replace(/x/g, function() {
@@ -41,7 +42,7 @@ var ctx = canvas.getContext('2d');
 var animate = window.requestAnimationFrame       ||
               window.webkitRequestAnimationFrame ||
               window.mozRequestAnimationFrame    ||
-              function(f) { setTimeout(f, 1000 / 60); };
+              function(f) { setTimeout(f, 1000 / fps); };
 
 var image_cache = {};
 var get_image = function(url) {
