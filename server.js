@@ -5,6 +5,8 @@ var app = require('http').createServer(function (req, res) {
 	file.serve(req, res);
 });
 
+var diff = require('./static/diff.js');
+
 var world_size = 2048;
 
 var uid = function() {
@@ -152,14 +154,32 @@ setInterval(function() {
 		}
 	}
 
+	var message = diff.clone({
+		pirates: pirates,
+		corsairs: corsairs,
+		treasures: treasures
+	});
+
+	var delta = diff.do_diff(last_message, message);
+	if(delta) {
+		console.log(JSON.stringify(message).length + ' vs ' + JSON.stringify(delta).length)
+	} else {
+		console.log(JSON.stringify(message).length + ' skipped')
+	}
+
+	last_message = message;
+
 	for( key in players ) {
-		players[key].socket.emit('update', {
-			pirates: pirates,
-			corsairs: corsairs,
-			treasures: treasures
-		});
+		if(players[key].full_update) {
+			players[key].socket.emit('update', message);
+			delete players[key].full_update;
+		} else if(delta) {
+			players[key].socket.emit('delta', delta);
+		}
 	}
 }, 16);
+
+var last_message = {};
 
 io.sockets.on('connection', function (socket) {
     var player = undefined;
@@ -188,7 +208,8 @@ io.sockets.on('connection', function (socket) {
 
 		players[player] = {
 			address: address,
-			socket: socket
+			socket: socket,
+			full_update: true
 		};
 		
 	});
