@@ -181,7 +181,13 @@ var treasure_icon = function(obj){
 	ctx.lineWidth = lineWidth;
 	
 	ctx.translate(obj.x + move*obj.vx, obj.y + move*obj.vy);
+
+	ctx.rotate(Math.sin(current_time + obj.x) / 4);
+
 	ctx.translate(-canvasWidth/2,-canvasHeight/2);
+
+
+
 	//DIAMENT
 	ctx.beginPath();
 	
@@ -195,7 +201,9 @@ var treasure_icon = function(obj){
 	ctx.closePath();
 	
 	ctx.strokeStyle = 'black';
-	ctx.fillStyle = '#E60000';	
+	ctx.fillStyle = '#E60000';
+	var v = Math.round(Math.sin(current_time * 5 + obj.y / 100) * 255);
+	ctx.fillStyle = 'rgb(250, ' + v + ', ' + v + ')';
 	ctx.stroke();
     ctx.fill();
 	
@@ -373,6 +381,9 @@ var tick = function(time) {
 			}
 			last_pad = clone(pad);
 
+			if(Math.abs(pad.axes[1]) + Math.abs(pad.axes[0]) > 0.1)
+				mrot = Math.atan2(pad.axes[0], -pad.axes[1]);
+
 			socket.emit('move', { 
 				vx: pad.axes[0],
 				vy: pad.axes[1],
@@ -417,11 +428,10 @@ onkeydown = function(e) {
 		}
 		if(left_key) mrot -= treshold_rotate;
 		if(right_key) mrot += treshold_rotate;
-		if(mrot > Math.PI * 2 || mrot < -1 * Math.PI * 2)
-			mrot = 0.0;
+		mrot = ( mrot + 2 * Math.PI ) % (2 * Math.PI);
 		mvy = 0;	
 		mvx = 0;
-		console.log(treshold_rotate);
+		//console.log(treshold_rotate);
 		if(up_key){ 
 			mvy -= Math.cos(mrot);
 			mvx -= -1*Math.sin(mrot);
