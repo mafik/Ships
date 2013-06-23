@@ -126,28 +126,28 @@ var corsairIcon = function(obj){
 	ctx.beginPath();
 	
 	ctx.moveTo(0.45*canvasWidth, 0.3*canvasHeight);
-	ctx.lineTo(0.05*canvasWidth, 0.45*canvasHeight + Math.sin(current_time) * 10);
+	ctx.lineTo(0.05*canvasWidth, 0.45*canvasHeight + Math.sin(current_time * 2) * 10);
 	
 	ctx.moveTo(0.45*canvasWidth, 0.4*canvasHeight);
-	ctx.lineTo(0.05*canvasWidth, 0.55*canvasHeight + Math.sin(current_time) * 10);
+	ctx.lineTo(0.05*canvasWidth, 0.55*canvasHeight + Math.sin(current_time * 2) * 10);
 	
 	ctx.moveTo(0.45*canvasWidth, 0.5*canvasHeight);
-	ctx.lineTo(0.05*canvasWidth, 0.65*canvasHeight + Math.sin(current_time) * 10);
+	ctx.lineTo(0.05*canvasWidth, 0.65*canvasHeight + Math.sin(current_time * 2) * 10);
 	
 	ctx.moveTo(0.45*canvasWidth, 0.6*canvasHeight);
-	ctx.lineTo(0.05*canvasWidth, 0.75*canvasHeight + Math.sin(current_time) * 10);
+	ctx.lineTo(0.05*canvasWidth, 0.75*canvasHeight + Math.sin(current_time * 2) * 10);
 	
 	ctx.moveTo(0.55*canvasWidth, 0.3*canvasHeight);
-	ctx.lineTo(0.95*canvasWidth, 0.45*canvasHeight + Math.sin(current_time) * 10);
+	ctx.lineTo(0.95*canvasWidth, 0.45*canvasHeight + Math.sin(current_time * 2) * 10);
 	                                 
 	ctx.moveTo(0.55*canvasWidth, 0.4*canvasHeight);
-	ctx.lineTo(0.95*canvasWidth, 0.55*canvasHeight + Math.sin(current_time) * 10);
+	ctx.lineTo(0.95*canvasWidth, 0.55*canvasHeight + Math.sin(current_time * 2) * 10);
 	                                 
 	ctx.moveTo(0.55*canvasWidth, 0.5*canvasHeight);
-	ctx.lineTo(0.95*canvasWidth, 0.65*canvasHeight + Math.sin(current_time) * 10);
+	ctx.lineTo(0.95*canvasWidth, 0.65*canvasHeight + Math.sin(current_time * 2) * 10);
 	                                 
 	ctx.moveTo(0.55*canvasWidth, 0.6*canvasHeight);
-	ctx.lineTo(0.95*canvasWidth, 0.75*canvasHeight + Math.sin(current_time) * 10);
+	ctx.lineTo(0.95*canvasWidth, 0.75*canvasHeight + Math.sin(current_time * 2) * 10);
 	
 	ctx.closePath();
 
