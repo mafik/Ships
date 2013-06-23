@@ -40,8 +40,45 @@ socket.on('death', function() {
 	new Audio('bubbles.ogg').play();
 });
 
+var wind_particles = [];
+var wind_count = 0;
+
+var add_wind_particle = function() {
+	wind_particles.push({
+		start: current_time,
+		x: Math.random() * canvas.width,
+		y: Math.random() * canvas.height,
+	});
+	if(--wind_count)
+		setTimeout(add_wind_particle, 30);
+};
+
+var draw_wind_particles = function() {
+	for(var i = 0; i < wind_particles.length; ++i) {
+		var particle = wind_particles[i];
+		var age = current_time - particle.start;
+		if(age > 1) {
+			wind_particles.splice(i, 1);
+			--i;
+			continue;
+		}
+		particle.x += me.vx * 2;
+		particle.y += me.vy * 2;
+		var alpha = Math.sin(age / 1 * Math.PI);
+		ctx.strokeStyle = 'rgba(255, 255, 255, '+alpha+')';
+		ctx.beginPath();
+		ctx.moveTo(particle.x, particle.y);
+		ctx.lineWidth = alpha * 2;
+		ctx.lineTo(particle.x + me.vx * 30 * alpha, particle.y + me.vy * 30 * alpha);
+		//ctx.arc(particle.x, particle.y, alpha * 5, 0, 2*Math.PI, false);
+		ctx.stroke();
+	}
+};
+
 socket.on('wind', function() {
 	new Audio('wind.ogg').play();
+	wind_count = 50;
+	add_wind_particle();
 });
 
 socket.on('wind_fail', function() {
@@ -91,7 +128,176 @@ var circle = function(obj) {
 	ctx.restore();
 }
 
+var another_pirate_Icon = function(obj){
+	ctx.save();	
+	var move = (game.now - game.updatedAt)/16;
+	ctx.translate(obj.x + move*obj.vx, obj.y + move*obj.vy);
+	//ctx.rotate(Math.atan2(me.x,me.y));
+	var lineWidth = 2;
+	var canvasWidth = 30;
+	var canvasHeight = 1.15*canvasWidth;
+    //var canvas = document.getElementById('corsair');
 
+	//	canvas.width = canvasWidth;
+	//	canvas.height = canvasHeight;
+	  
+//	ctx.rotate(Math.PI);
+	ctx.translate(-canvasWidth/2,-canvasHeight/2);
+	//LODKA
+    ctx.beginPath();
+	
+    ctx.moveTo(0.35*canvasWidth, lineWidth);
+	ctx.lineTo(0.65*canvasWidth, lineWidth);
+    ctx.quadraticCurveTo(0.85*canvasWidth, 0.4*canvasHeight , 0.5*canvasWidth, canvasHeight);
+	ctx.quadraticCurveTo(0.15*canvasWidth, 0.4*canvasHeight , 0.35*canvasWidth, lineWidth);
+	
+	ctx.closePath();
+	
+	var grd=ctx.createRadialGradient(0.45*canvasWidth, 0.5*canvasHeight,0.1*canvasWidth,0.45*canvasWidth, 0.5*canvasHeight,0.7*canvasWidth);
+	grd.addColorStop(0,'#2E0F00');
+	grd.addColorStop(1,'#CC6600');
+	
+    ctx.strokeStyle = '#2E0F00';
+	ctx.fillStyle = grd;
+	ctx.lineWidth = 5;
+	ctx.lineJoin = 'miter';
+	ctx.miterLimit=5;
+	ctx.stroke();
+    ctx.fill();
+	
+	//WIOSLA
+	ctx.beginPath();
+	
+	ctx.moveTo(0.45*canvasWidth, 0.3*canvasHeight);
+	ctx.lineTo(0.05*canvasWidth, 0.45*canvasHeight + Math.sin(current_time * 2) * 10);
+	
+	ctx.moveTo(0.45*canvasWidth, 0.4*canvasHeight);
+	ctx.lineTo(0.05*canvasWidth, 0.55*canvasHeight + Math.sin(current_time * 2) * 10);
+	
+	ctx.moveTo(0.45*canvasWidth, 0.5*canvasHeight);
+	ctx.lineTo(0.05*canvasWidth, 0.65*canvasHeight + Math.sin(current_time * 2) * 10);
+	
+	ctx.moveTo(0.45*canvasWidth, 0.6*canvasHeight);
+	ctx.lineTo(0.05*canvasWidth, 0.75*canvasHeight + Math.sin(current_time * 2) * 10);
+	
+	ctx.moveTo(0.55*canvasWidth, 0.3*canvasHeight);
+	ctx.lineTo(0.95*canvasWidth, 0.45*canvasHeight + Math.sin(current_time * 2) * 10);
+	                                 
+	ctx.moveTo(0.55*canvasWidth, 0.4*canvasHeight);
+	ctx.lineTo(0.95*canvasWidth, 0.55*canvasHeight + Math.sin(current_time * 2) * 10);
+	                                 
+	ctx.moveTo(0.55*canvasWidth, 0.5*canvasHeight);
+	ctx.lineTo(0.95*canvasWidth, 0.65*canvasHeight + Math.sin(current_time * 2) * 10);
+	                                 
+	ctx.moveTo(0.55*canvasWidth, 0.6*canvasHeight);
+	ctx.lineTo(0.95*canvasWidth, 0.75*canvasHeight + Math.sin(current_time * 2) * 10);
+	
+	ctx.closePath();
+
+	ctx.lineWidth = 3;
+
+	ctx.stroke();
+	
+	//ZAGIEL
+	ctx.beginPath();
+	
+	ctx.moveTo(0, 0.2*canvasHeight);
+	ctx.quadraticCurveTo(0.5*canvasWidth, 0.3*canvasHeight + Math.sin(current_time * 5) * 10, canvasWidth, 0.2*canvasHeight);
+	ctx.quadraticCurveTo(0.5*canvasWidth, 0.8*canvasHeight + Math.sin(current_time * 5 + 0.5) * 10, 0, 0.2*canvasHeight);
+	
+	ctx.closePath();
+	
+	ctx.fillStyle = 'gray';
+	// ctx.stroke();
+    ctx.fill();
+
+	ctx.restore();
+}
+var enemyIcon = function(obj){
+	ctx.save();	
+	var move = (game.now - game.updatedAt)/16;
+	ctx.translate(obj.x + move*obj.vx, obj.y + move*obj.vy);
+	ctx.rotate(Math.atan2(me.x,me.y));
+	var lineWidth = 2;
+	var canvasWidth = 30;
+	var canvasHeight = 1.15*canvasWidth;
+    //var canvas = document.getElementById('corsair');
+
+	//	canvas.width = canvasWidth;
+	//	canvas.height = canvasHeight;
+	  
+//	ctx.rotate(Math.PI);
+	ctx.translate(-canvasWidth/2,-canvasHeight/2);
+	//LODKA
+    ctx.beginPath();
+	
+    ctx.moveTo(0.35*canvasWidth, lineWidth);
+	ctx.lineTo(0.65*canvasWidth, lineWidth);
+    ctx.quadraticCurveTo(0.85*canvasWidth, 0.4*canvasHeight , 0.5*canvasWidth, canvasHeight);
+	ctx.quadraticCurveTo(0.15*canvasWidth, 0.4*canvasHeight , 0.35*canvasWidth, lineWidth);
+	
+	ctx.closePath();
+	
+	var grd=ctx.createRadialGradient(0.45*canvasWidth, 0.5*canvasHeight,0.1*canvasWidth,0.45*canvasWidth, 0.5*canvasHeight,0.7*canvasWidth);
+	grd.addColorStop(0,'#2E0F00');
+	grd.addColorStop(1,'#CC6600');
+	
+    ctx.strokeStyle = '#2E0F00';
+	ctx.fillStyle = grd;
+	ctx.lineWidth = 5;
+	ctx.lineJoin = 'miter';
+	ctx.miterLimit=5;
+	ctx.stroke();
+    ctx.fill();
+	
+	//WIOSLA
+	ctx.beginPath();
+	
+	ctx.moveTo(0.45*canvasWidth, 0.3*canvasHeight);
+	ctx.lineTo(0.05*canvasWidth, 0.45*canvasHeight + Math.sin(current_time * 2) * 10);
+	
+	ctx.moveTo(0.45*canvasWidth, 0.4*canvasHeight);
+	ctx.lineTo(0.05*canvasWidth, 0.55*canvasHeight + Math.sin(current_time * 2) * 10);
+	
+	ctx.moveTo(0.45*canvasWidth, 0.5*canvasHeight);
+	ctx.lineTo(0.05*canvasWidth, 0.65*canvasHeight + Math.sin(current_time * 2) * 10);
+	
+	ctx.moveTo(0.45*canvasWidth, 0.6*canvasHeight);
+	ctx.lineTo(0.05*canvasWidth, 0.75*canvasHeight + Math.sin(current_time * 2) * 10);
+	
+	ctx.moveTo(0.55*canvasWidth, 0.3*canvasHeight);
+	ctx.lineTo(0.95*canvasWidth, 0.45*canvasHeight + Math.sin(current_time * 2) * 10);
+	                                 
+	ctx.moveTo(0.55*canvasWidth, 0.4*canvasHeight);
+	ctx.lineTo(0.95*canvasWidth, 0.55*canvasHeight + Math.sin(current_time * 2) * 10);
+	                                 
+	ctx.moveTo(0.55*canvasWidth, 0.5*canvasHeight);
+	ctx.lineTo(0.95*canvasWidth, 0.65*canvasHeight + Math.sin(current_time * 2) * 10);
+	                                 
+	ctx.moveTo(0.55*canvasWidth, 0.6*canvasHeight);
+	ctx.lineTo(0.95*canvasWidth, 0.75*canvasHeight + Math.sin(current_time * 2) * 10);
+	
+	ctx.closePath();
+
+	ctx.lineWidth = 3;
+
+	ctx.stroke();
+	
+	//ZAGIEL
+	ctx.beginPath();
+	
+	ctx.moveTo(0, 0.2*canvasHeight);
+	ctx.quadraticCurveTo(0.5*canvasWidth, 0.3*canvasHeight + Math.sin(current_time * 5) * 10, canvasWidth, 0.2*canvasHeight);
+	ctx.quadraticCurveTo(0.5*canvasWidth, 0.8*canvasHeight + Math.sin(current_time * 5 + 0.5) * 10, 0, 0.2*canvasHeight);
+	
+	ctx.closePath();
+	
+	ctx.fillStyle = 'red';
+	// ctx.stroke();
+    ctx.fill();
+
+	ctx.restore();
+}
 
 var corsairIcon = function(obj){
 	
@@ -189,7 +395,13 @@ var treasure_icon = function(obj){
 	ctx.lineWidth = lineWidth;
 	
 	ctx.translate(obj.x + move*obj.vx, obj.y + move*obj.vy);
+
+	ctx.rotate(Math.sin(current_time + obj.x) / 4);
+
 	ctx.translate(-canvasWidth/2,-canvasHeight/2);
+
+
+
 	//DIAMENT
 	ctx.beginPath();
 	
@@ -203,7 +415,9 @@ var treasure_icon = function(obj){
 	ctx.closePath();
 	
 	ctx.strokeStyle = 'black';
-	ctx.fillStyle = '#E60000';	
+	ctx.fillStyle = '#E60000';
+	var v = Math.round(Math.sin(current_time * 5 + obj.y / 100) * 255);
+	ctx.fillStyle = 'rgb(250, ' + v + ', ' + v + ')';
 	ctx.stroke();
     ctx.fill();
 	
@@ -260,12 +474,13 @@ var draw_world = function() {
 
 	ctx.fillStyle = 'rgb(255, 0, 0)';
 	for(var key in game.corsairs) {
-		circle(game.corsairs[key]);
+		enemyIcon(game.corsairs[key]);
 	}
 
 	ctx.fillStyle = 'rgb(0, 155, 0)';
 	for(var key in game.pirates) {
-		circle(game.pirates[key]);
+		if(game.pirates[key]!=me)
+		another_pirate_Icon(game.pirates[key]);
 	}
 
 	ctx.fillStyle = 'rgb(12, 155, 0)';
@@ -316,6 +531,8 @@ var tick = function(time) {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 	ctx.save();
+
+
 	ctx.translate(canvas.width / 2, canvas.height / 2);
 	ctx.rotate(Math.sin(time) / 20);
 
@@ -350,6 +567,8 @@ var tick = function(time) {
 	
 	ctx.restore();
 
+	draw_wind_particles();
+
 	if(left_key || right_key || up_key || down_key) {
 
 		if(left_key) mrot -= treshold_rotate;
@@ -381,6 +600,9 @@ var tick = function(time) {
 				}
 			}
 			last_pad = clone(pad);
+
+			if(Math.abs(pad.axes[1]) + Math.abs(pad.axes[0]) > 0.1)
+				mrot = Math.atan2(pad.axes[0], -pad.axes[1]);
 
 			socket.emit('move', { 
 				vx: pad.axes[0],
@@ -428,11 +650,10 @@ onkeydown = function(e) {
 		}
 		if(left_key) mrot -= treshold_rotate;
 		if(right_key) mrot += treshold_rotate;
-		if(mrot > Math.PI * 2 || mrot < -1 * Math.PI * 2)
-			mrot = 0.0;
+		mrot = ( mrot + 2 * Math.PI ) % (2 * Math.PI);
 		mvy = 0;	
 		mvx = 0;
-		console.log(treshold_rotate);
+		//console.log(treshold_rotate);
 		if(up_key){ 
 			mvy -= Math.cos(mrot);
 			mvx -= -1*Math.sin(mrot);
