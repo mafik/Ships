@@ -167,19 +167,79 @@ var corsairIcon = function(obj){
     ctx.fill();
 	}
 
+var treasure_icon = function(obj){
+	ctx.save();
+    var lineWidth = 2;
+	var canvasWidth = 50;
+	var canvasHeight = 0.8*canvasWidth;
 
+	ctx.lineWidth = lineWidth;
+	
+	//DIAMENT
+	ctx.beginPath();
+	
+    ctx.moveTo(0.25*canvasWidth, lineWidth);
+    ctx.lineTo(0.75*canvasWidth, lineWidth);
+	ctx.lineTo(canvasWidth, 0.25*canvasHeight);
+	ctx.lineTo(0.5*canvasWidth, canvasHeight);
+	ctx.lineTo(0, 0.25*canvasHeight);
+	ctx.lineTo(0.25*canvasWidth, lineWidth);
+	
+	ctx.closePath();
+	
+	ctx.strokeStyle = 'black';
+	ctx.fillStyle = '#E60000';	
+	ctx.stroke();
+    ctx.fill();
+	
+	ctx.beginPath();
+	
+    ctx.moveTo(0.25*canvasWidth, lineWidth);
+    ctx.lineTo(0.75*canvasWidth, lineWidth);
+	ctx.lineTo(canvasWidth, 0.25*canvasHeight);
+	ctx.lineTo(0.5*canvasWidth, canvasHeight);
+	ctx.lineTo(0, 0.25*canvasHeight);
+	ctx.lineTo(0.25*canvasWidth, lineWidth);
+	
+	ctx.moveTo(0, 0.25*canvasHeight);
+	ctx.lineTo(0.30*canvasWidth, 0.35*canvasHeight);
+	ctx.lineTo(0.70*canvasWidth, 0.35*canvasHeight);
+	ctx.lineTo(canvasWidth, 0.25*canvasHeight);
+    ctx.lineTo(0.75*canvasWidth, lineWidth);
+	ctx.lineTo(0.25*canvasWidth, lineWidth);
+
+	
+    ctx.moveTo(0.35*canvasWidth, lineWidth);
+	ctx.lineTo(0.30*canvasWidth, 0.35*canvasHeight);
+	ctx.lineTo(0.5*canvasWidth, canvasHeight);
+	ctx.lineTo(0.70*canvasWidth, 0.35*canvasHeight);
+	ctx.lineTo(0.60*canvasWidth, lineWidth);
+		
+	ctx.closePath();
+	
+	ctx.strokeStyle = 'black';
+	ctx.fillStyle = '#CC0000';	
+	ctx.stroke();
+    ctx.fill();	
+	
+
+
+
+	ctx.restore();
+
+
+}
 
 var draw_pirate = function(obj) {
 	ctx.save();
 	corsairIcon(obj);
-	ctx.fill();
 	ctx.restore();
 }
 var draw_world = function() {
 
 	ctx.fillStyle = 'rgb(255, 255, 0)';
 	for(var key in game.treasures) {
-		circle(game.treasures[key]);
+		treasure_icon(game.treasures[key]);
 	}
 
 	ctx.fillStyle = 'rgb(255, 0, 0)';
