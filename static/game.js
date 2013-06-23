@@ -86,11 +86,11 @@ socket.on('wind_fail', function() {
 });
 
 socket.on('scary', function() {
-	new Audio('scary.ogg').play();
+	new Audio('gong.ogg').play();
 });
 
 socket.on('scary_fail', function() {
-	new Audio('scary_fail.ogg').play();
+	new Audio('tong.ogg').play();
 });
 
 var game = { treasures: {}, pirates: {}, corsairs: {}, updatedAt: 0, now: 0 };
