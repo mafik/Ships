@@ -161,11 +161,6 @@ setInterval(function() {
 	});
 
 	var delta = diff.do_diff(last_message, message);
-	if(delta) {
-		console.log(JSON.stringify(message).length + ' vs ' + JSON.stringify(delta).length)
-	} else {
-		console.log(JSON.stringify(message).length + ' skipped')
-	}
 
 	last_message = message;
 
