@@ -97,8 +97,8 @@ var corsairIcon = function(obj){
 	//	canvas.height = canvasHeight;
 	  
 	ctx.lineWidth = lineWidth;
-	ctx.translate(obj.x, obj.y);
-	
+	var move = (game.now - game.updatedAt)/16;
+	ctx.translate(obj.x + move*obj.vx, obj.y + move*obj.vy);
 	ctx.rotate(mrot || 0);
 	ctx.rotate(Math.PI);
 	ctx.translate(-canvasWidth/2,-canvasHeight/2);
@@ -126,28 +126,28 @@ var corsairIcon = function(obj){
 	ctx.beginPath();
 	
 	ctx.moveTo(0.45*canvasWidth, 0.3*canvasHeight);
-	ctx.lineTo(0.05*canvasWidth, 0.45*canvasHeight);
+	ctx.lineTo(0.05*canvasWidth, 0.45*canvasHeight + Math.sin(current_time) * 10);
 	
 	ctx.moveTo(0.45*canvasWidth, 0.4*canvasHeight);
-	ctx.lineTo(0.05*canvasWidth, 0.55*canvasHeight);
+	ctx.lineTo(0.05*canvasWidth, 0.55*canvasHeight + Math.sin(current_time) * 10);
 	
 	ctx.moveTo(0.45*canvasWidth, 0.5*canvasHeight);
-	ctx.lineTo(0.05*canvasWidth, 0.65*canvasHeight);
+	ctx.lineTo(0.05*canvasWidth, 0.65*canvasHeight + Math.sin(current_time) * 10);
 	
 	ctx.moveTo(0.45*canvasWidth, 0.6*canvasHeight);
-	ctx.lineTo(0.05*canvasWidth, 0.75*canvasHeight);
+	ctx.lineTo(0.05*canvasWidth, 0.75*canvasHeight + Math.sin(current_time) * 10);
 	
 	ctx.moveTo(0.55*canvasWidth, 0.3*canvasHeight);
-	ctx.lineTo(0.95*canvasWidth, 0.45*canvasHeight);
+	ctx.lineTo(0.95*canvasWidth, 0.45*canvasHeight + Math.sin(current_time) * 10);
 	                                 
 	ctx.moveTo(0.55*canvasWidth, 0.4*canvasHeight);
-	ctx.lineTo(0.95*canvasWidth, 0.55*canvasHeight);
+	ctx.lineTo(0.95*canvasWidth, 0.55*canvasHeight + Math.sin(current_time) * 10);
 	                                 
 	ctx.moveTo(0.55*canvasWidth, 0.5*canvasHeight);
-	ctx.lineTo(0.95*canvasWidth, 0.65*canvasHeight);
+	ctx.lineTo(0.95*canvasWidth, 0.65*canvasHeight + Math.sin(current_time) * 10);
 	                                 
 	ctx.moveTo(0.55*canvasWidth, 0.6*canvasHeight);
-	ctx.lineTo(0.95*canvasWidth, 0.75*canvasHeight);
+	ctx.lineTo(0.95*canvasWidth, 0.75*canvasHeight + Math.sin(current_time) * 10);
 	
 	ctx.closePath();
 
@@ -169,12 +169,16 @@ var corsairIcon = function(obj){
 
 var treasure_icon = function(obj){
 	ctx.save();
+	
+	var move = (game.now - game.updatedAt)/16;
     var lineWidth = 2;
 	var canvasWidth = 50;
 	var canvasHeight = 0.8*canvasWidth;
 
 	ctx.lineWidth = lineWidth;
 	
+	ctx.translate(obj.x + move*obj.vx, obj.y + move*obj.vy);
+	ctx.translate(-canvasWidth/2,-canvasHeight/2);
 	//DIAMENT
 	ctx.beginPath();
 	
