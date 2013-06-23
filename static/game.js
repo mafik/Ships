@@ -116,8 +116,6 @@ var get_image = function(url) {
 	return image_cache[url];
 };
 
-var previous_pirates = clone(game.corsairs);
-var previous_corsairs = clone(game.pirates);
 var circle = function(obj) {
 	ctx.save();
 	var move = (game.now - game.updatedAt)/16;
@@ -215,11 +213,11 @@ var another_pirate_Icon = function(obj){
 
 	ctx.restore();
 }
-var enemyIcon = function(obj,pre){
+var enemyIcon = function(obj){
 	ctx.save();	
 	var move = (game.now - game.updatedAt)/16;
 	ctx.translate(obj.x + move*obj.vx, obj.y + move*obj.vy);
-	ctx.rotate(Math.atan2(obj.x-pre.x,obj.y-pre.y));
+	ctx.rotate(Math.atan2(obj.x,obj.y));
 	var lineWidth = 2;
 	var canvasWidth = 30;
 	var canvasHeight = 1.15*canvasWidth;
@@ -466,21 +464,19 @@ var draw_world = function() {
 
 	ctx.fillStyle = 'rgb(255, 0, 0)';
 	for(var key in game.corsairs) {
-		enemyIcon(game.corsairs[key],previous_corsairs[key]);
+		enemyIcon(game.corsairs[key]);
 	}
 
 	ctx.fillStyle = 'rgb(0, 155, 0)';
 	for(var key in game.pirates) {
 		if(game.pirates[key]!=me)
-		another_pirate_Icon(game.pirates[key],previous_pirates[key]);
+		another_pirate_Icon(game.pirates[key]);
 	}
 
 	ctx.fillStyle = 'rgb(12, 155, 0)';
 	if(me){
 		draw_pirate(me);
 	}
-	previous_corsairs = clone(game.corsairs);
-	previous_pirates = clone(game.pirates);
 	
 }
 
