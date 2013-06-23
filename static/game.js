@@ -1,5 +1,5 @@
 
-var world_size = 2000;
+var world_size = 2048;
 var fps = 24;
 
 var uid = function() {
