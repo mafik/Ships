@@ -53,7 +53,6 @@ setInterval(function() {
 			var alpha = 1 + Math.sin(pirate.speed_buff / speed_length * Math.PI);
 			vx *= alpha;
 			vy *= alpha;
-			console.log('Speed buff ' + alpha);
 
 			if(pirate.speed_buff == 0) {
 				delete pirate.speed_buff;
