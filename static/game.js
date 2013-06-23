@@ -48,6 +48,14 @@ socket.on('wind_fail', function() {
 	new Audio('wind_fail.ogg').play();
 });
 
+socket.on('scary', function() {
+	new Audio('scary.ogg').play();
+});
+
+socket.on('scary_fail', function() {
+	new Audio('scary_fail.ogg').play();
+});
+
 var game = { treasures: {}, pirates: {}, corsairs: {}, updatedAt: 0, now: 0 };
 var me;
 var treshold_rotate=0.1;
@@ -401,7 +409,9 @@ var powerup = function(number) {
 	if(number == 0) {
 		powerup_wind();
 	}
-	// TODO: reszta powerupów
+	if( number == 3 ) {
+		socket.emit('scary');
+	}
 };
 
 onkeydown = function(e) {
