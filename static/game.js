@@ -14,14 +14,23 @@ socket.on('connect', function () {
 	socket.emit('hello', localStorage.player_id);
 });
 
-socket.on('update', function(msg) {
-	treasures = msg.treasures;
-	pirates = msg.pirates;
-	corsairs = msg.corsairs;
-	if(localStorage.player_id in pirates) {
-		me = pirates[localStorage.player_id];
+var update = function(msg) {
+	game = msg;
+	game.updatedAt = (new Date).getTime();
+	if(localStorage.player_id in game.pirates) {
+		me = game.pirates[localStorage.player_id];
+		var str = "" + me.points;
+		str = str.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+		document.getElementById('points').textContent = str;
 	}
+};
+
+socket.on('delta', function(delta) {
+	var fixed = apply_diff(game, delta);
+	update(fixed);
 });
+
+socket.on('update', update);
 
 socket.on('success', function() {
 	new Audio('collectcoin.ogg').play();
@@ -31,19 +40,19 @@ socket.on('death', function() {
 	new Audio('bubbles.ogg').play();
 });
 
-var treasures = {}, pirates = {}, corsairs = {};
+var game = { treasures: {}, pirates: {}, corsairs: {}, updatedAt: 0, now: 0 };
 var me;
 var treshold_rotate=0.1;
 
 var mrot = 0.000;
 var canvas = document.getElementById('canvas');
-canvas.style.background = '#106';
+canvas.style.background = '#8ad';
 var ctx = canvas.getContext('2d');
 
 var animate = window.requestAnimationFrame       ||
               window.webkitRequestAnimationFrame ||
               window.mozRequestAnimationFrame    ||
-              function(f) { setTimeout(f, 1000 / 60); };
+              function(f) { setTimeout(f, 1000 / 30); };
 
 var image_cache = {};
 var get_image = function(url) {
@@ -56,7 +65,8 @@ var get_image = function(url) {
 
 var circle = function(obj) {
 	ctx.save();
-	ctx.translate(obj.x, obj.y);
+	var move = (game.now - game.updatedAt)/16;
+	ctx.translate(obj.x + move*obj.vx, obj.y + move*obj.vy);
 	ctx.beginPath();
 	ctx.rotate(obj.alpha || 0);
 	ctx.lineTo(0, 0);
@@ -160,18 +170,18 @@ var draw_pirate = function(obj) {
 var draw_world = function() {
 
 	ctx.fillStyle = 'rgb(255, 255, 0)';
-	for(var key in treasures) {
-		circle(treasures[key]);
+	for(var key in game.treasures) {
+		circle(game.treasures[key]);
 	}
 
 	ctx.fillStyle = 'rgb(255, 0, 0)';
-	for(var key in corsairs) {
-		circle(corsairs[key]);
+	for(var key in game.corsairs) {
+		circle(game.corsairs[key]);
 	}
 
 	ctx.fillStyle = 'rgb(0, 155, 0)';
-	for(var key in pirates) {
-			circle(pirates[key]);
+	for(var key in game.pirates) {
+		circle(game.pirates[key]);
 	}
 
 	ctx.fillStyle = 'rgb(12, 155, 0)';
@@ -203,13 +213,19 @@ camera.update = function(dt) {
 
 var bg = new Image();
 bg.src = 'bg.jpg';
+var bg_pattern = 'transparent';
+bg.onload = function() {
+	bg_pattern = ctx.createPattern(bg, 'repeat');
+}
+var showBackground = true;
 
 var current_time = 0;
 var tick = function(time) {
+	var function_start = (new Date).getTime();
 	animate(tick); // schedule next frame
 
 	time = time / 1000; // animation time
-	var now = (new Date).getTime() / 1000; // calendar time
+	game.now = (new Date).getTime();
 
 	camera.update(time - current_time);
 
@@ -224,10 +240,9 @@ var tick = function(time) {
 
 	ctx.translate(-camera.x, -camera.y);
 
-	for(var x = -1; x <= 2; ++x) {
-		for(var y = -1; y <= 2; ++y) {
-			ctx.drawImage(bg, x * 1024, y * 1024);
-		}
+	if( showBackground ) {
+		ctx.fillStyle = bg_pattern;
+		ctx.fillRect(-1000, -1000, 5000, 5000);
 	}
 
 	ctx.translate(-world_size, -world_size);
@@ -284,14 +299,17 @@ var tick = function(time) {
 
 
 	current_time = time;
+
+	var function_end = (new Date).getTime();
+	document.getElementById('fps-meter').innerText = (function_end - function_start) + ' ms';
 };
 animate(tick);
 
 var up_key = false, left_key = false, right_key = false, down_key = false;
 
 onkeydown = function(e) {
-	var code = e.which - 37;
-	if(code >= 0 && code < 4) {
+	if( e.which >= 37 && e.which < 41) {
+		var code = e.which - 37;
 		if(code == 0) {
 			left_key = true;
 		} else if(code == 1) {
@@ -321,6 +339,11 @@ onkeydown = function(e) {
 			vy: mvy,
 			alpha:mrot
 		});
+		return;
+	}
+	
+	if( e.which == 84 && e.shiftKey ) {
+		showBackground = !showBackground;
 	}
 };
 

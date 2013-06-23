@@ -5,6 +5,8 @@ var app = require('http').createServer(function (req, res) {
 	file.serve(req, res);
 });
 
+var diff = require('./static/diff.js');
+
 var world_size = 2048;
 
 var uid = function() {
@@ -28,6 +30,8 @@ for(var i = 0; i < 50; ++i) {
 	treasures[i] = { 
 		x: Math.random() * world_size, 
 		y: Math.random() * world_size, 
+		vx: 0,
+		vy: 0,
 		alpha: Math.random() * 2 * Math.PI 
 	};
 }
@@ -40,12 +44,9 @@ setInterval(function() {
 		pirate = pirates[key];
 		var vx = Number(pirate.vx);
 		var vy = Number(pirate.vy);
-		var l = Math.max(1, Math.sqrt(vx*vx + vy*vy));
-		if(l) {
-			pirate.x += vx / l;
-			pirate.y += vy / l;
-		}
 
+		pirate.x += vx;
+		pirate.y += vy;
 		pirate.x = ( pirate.x + world_size ) % world_size;
 		pirate.y = ( pirate.y + world_size ) % world_size;
 
@@ -58,8 +59,12 @@ setInterval(function() {
 				treasures[key2] = {
 					x: Math.random() * world_size,
 					y: Math.random() * world_size,
+					vx: 0,
+					vy: 0,
 					alpha: Math.random() * 2 * Math.PI
 				};
+
+				pirate.points += 1000;
 
 				corsairs[uid()] = {
 					x: Math.random() * world_size,
@@ -114,6 +119,8 @@ setInterval(function() {
 
 		corsair.x += dx;
 		corsair.y += dy;
+		corsair.vx = dx;
+		corsair.vy = dy;
 
 
 		corsair.x = ( corsair.x + world_size ) % world_size;
@@ -125,19 +132,19 @@ setInterval(function() {
 			var dx = pirate.x - corsair.x;
 			var dy = pirate.y - corsair.y;
 			if(Math.sqrt(dx*dx + dy*dy) < 20) {
-
-				delete pirates[key2];
+				pirate.x = Math.random() * world_size;
+				pirate.y = Math.random() * world_size;
+				pirate.points = 0;
+				
+				if(corsair.target != key2) {
+					corsair.target.points += pirate.points;
+				}
 
 				for(key3 in corsairs) {
 					if(corsairs[key3].target == key2) {
 						delete corsairs[key3];
 					}
 				}
-
-				pirates[key2] = {
-					x: Math.random() * world_size,
-					y: Math.random() * world_size
-				};
 
 				for(key3 in players) {
 					player = players[key3];
@@ -152,14 +159,27 @@ setInterval(function() {
 		}
 	}
 
+	var message = diff.clone({
+		pirates: pirates,
+		corsairs: corsairs,
+		treasures: treasures
+	});
+
+	var delta = diff.do_diff(last_message, message);
+
+	last_message = message;
+
 	for( key in players ) {
-		players[key].socket.emit('update', {
-			pirates: pirates,
-			corsairs: corsairs,
-			treasures: treasures
-		});
+		if(players[key].full_update) {
+			players[key].socket.emit('update', message);
+			delete players[key].full_update;
+		} else if(delta) {
+			players[key].socket.emit('delta', delta);
+		}
 	}
 }, 16);
+
+var last_message = {};
 
 io.sockets.on('connection', function (socket) {
     var player = undefined;
@@ -183,20 +203,28 @@ io.sockets.on('connection', function (socket) {
 			id: player,
 			x: world_size*Math.random(),
 			y: world_size*Math.random(),
-			alpha: 0
+			vx: 0,
+			vy: 0,
+			alpha: 0,
+			points: 0
 		};
 
 		players[player] = {
 			address: address,
-			socket: socket
+			socket: socket,
+			full_update: true
 		};
 		
 	});
 
 	socket.on('move', function(dir) {
 		if(pirates[player]) {
-			pirates[player].vx = Math.min(1, Math.max(-1, Number(dir.vx)));
-			pirates[player].vy = Math.min(1, Math.max(-1, Number(dir.vy)));
+			var p = pirates[player];
+			p.vx = Math.min(1, Math.max(-1, Number(dir.vx)));
+			p.vy = Math.min(1, Math.max(-1, Number(dir.vy)));
+			var l = Math.max(1, Math.sqrt(p.vx*p.vx + p.vy*p.vy));
+			p.vx /= l;
+			p.vy /= l;
 		}
 	});
 

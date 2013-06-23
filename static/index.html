@@ -1,6 +1,7 @@
 <!doctype html>
 <meta charset="utf-8">
 <title>Ships</title>
+<link href='http://fonts.googleapis.com/css?family=Rye&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 <style>
 html {
   overflow: hidden;
@@ -8,17 +9,39 @@ html {
 body { 
   margin: 0;
   color: white;
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Rye', sans-serif;
 }
 canvas {
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
 }
+#fps-meter {
+	position: fixed;
+	top: 0;
+	right: 0;
+	background: white;
+	color: black;
+}
+#points {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  color: #ffe92b;
+  font-size: 40px;
+  text-shadow: 2px 2px 0 #e4a400;
+}
+
+#points:before {
+  content: '$ ';
+}
 
 </style>
 <body>
 <canvas id="canvas"></canvas>
+<div id="points">0</div>
+<div id="fps-meter">0 ms</div>
 
-<script src="/socket.io/socket.io.js"></script>
-<script src="/game.js"></script>
+<script src="socket.io/socket.io.js"></script>
+<script src="diff.js"></script>
+<script src="game.js"></script>
