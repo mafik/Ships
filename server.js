@@ -136,6 +136,10 @@ setInterval(function() {
 				pirate.y = Math.random() * world_size;
 				pirate.points = 0;
 				
+				if(corsair.target != key2) {
+					corsair.target.points += pirate.points;
+				}
+
 				for(key3 in corsairs) {
 					if(corsairs[key3].target == key2) {
 						delete corsairs[key3];
