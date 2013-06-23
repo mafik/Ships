@@ -97,8 +97,8 @@ var corsairIcon = function(obj){
 	//	canvas.height = canvasHeight;
 	  
 	ctx.lineWidth = lineWidth;
-	ctx.translate(obj.x, obj.y);
-	
+	var move = (game.now - game.updatedAt)/16;
+	ctx.translate(obj.x + move*obj.vx, obj.y + move*obj.vy);
 	ctx.rotate(mrot || 0);
 	ctx.rotate(Math.PI);
 	ctx.translate(-canvasWidth/2,-canvasHeight/2);
@@ -169,12 +169,16 @@ var corsairIcon = function(obj){
 
 var treasure_icon = function(obj){
 	ctx.save();
+	
+	var move = (game.now - game.updatedAt)/16;
     var lineWidth = 2;
 	var canvasWidth = 50;
 	var canvasHeight = 0.8*canvasWidth;
 
 	ctx.lineWidth = lineWidth;
 	
+	ctx.translate(obj.x + move*obj.vx, obj.y + move*obj.vy);
+	ctx.translate(-canvasWidth/2,-canvasHeight/2);
 	//DIAMENT
 	ctx.beginPath();
 	
