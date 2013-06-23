@@ -15,10 +15,18 @@ canvas {
   -webkit-user-select: none;
   -moz-user-select: none;
 }
+#fps-meter {
+	position: fixed;
+	top: 0;
+	right: 0;
+	background: white;
+	color: black;
+}
 
 </style>
 <body>
 <canvas id="canvas"></canvas>
+<div id="fps-meter">0 ms</div>
 
 <script src="socket.io/socket.io.js"></script>
 <script src="diff.js"></script>

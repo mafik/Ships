@@ -53,7 +53,7 @@ var ctx = canvas.getContext('2d');
 var animate = window.requestAnimationFrame       ||
               window.webkitRequestAnimationFrame ||
               window.mozRequestAnimationFrame    ||
-              function(f) { setTimeout(f, 1000 / 60); };
+              function(f) { setTimeout(f, 1000 / 30); };
 
 var image_cache = {};
 var get_image = function(url) {
@@ -117,9 +117,14 @@ camera.update = function(dt) {
 
 var bg = new Image();
 bg.src = 'bg.jpg';
+var bg_pattern = 'transparent';
+bg.onload = function() {
+	bg_pattern = ctx.createPattern(bg, 'repeat');
+}
 
 var current_time = 0;
 var tick = function(time) {
+	var function_start = (new Date).getTime();
 	animate(tick); // schedule next frame
 
 	time = time / 1000; // animation time
@@ -138,11 +143,9 @@ var tick = function(time) {
 
 	ctx.translate(-camera.x, -camera.y);
 
-	for(var x = -1; x <= 2; ++x) {
-		for(var y = -1; y <= 2; ++y) {
-			ctx.drawImage(bg, x * 1024, y * 1024);
-		}
-	}
+	ctx.fillStyle = bg_pattern;
+	ctx.fillRect(-1000, -1000, 5000, 5000);
+
 
 	ctx.translate(-world_size, -world_size);
 	draw_world();
@@ -190,6 +193,9 @@ var tick = function(time) {
 
 
 	current_time = time;
+
+	var function_end = (new Date).getTime();
+	document.getElementById('fps-meter').innerText = (function_end - function_start) + ' ms';
 };
 animate(tick);
 
