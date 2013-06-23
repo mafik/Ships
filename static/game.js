@@ -96,7 +96,6 @@ var corsairIcon = function(obj){
 	//	canvas.width = canvasWidth;
 	//	canvas.height = canvasHeight;
 	  
-	ctx.lineWidth = lineWidth;
 	var move = (game.now - game.updatedAt)/16;
 	ctx.translate(obj.x + move*obj.vx, obj.y + move*obj.vy);
 	ctx.rotate(mrot || 0);
@@ -108,8 +107,7 @@ var corsairIcon = function(obj){
     ctx.moveTo(0.35*canvasWidth, lineWidth);
 	ctx.lineTo(0.65*canvasWidth, lineWidth);
     ctx.quadraticCurveTo(0.85*canvasWidth, 0.4*canvasHeight , 0.5*canvasWidth, canvasHeight);
-	ctx.moveTo(0.35*canvasWidth, lineWidth);
-	ctx.quadraticCurveTo(0.15*canvasWidth, 0.4*canvasHeight , 0.5*canvasWidth, canvasHeight);
+	ctx.quadraticCurveTo(0.15*canvasWidth, 0.4*canvasHeight , 0.35*canvasWidth, lineWidth);
 	
 	ctx.closePath();
 	
@@ -117,8 +115,11 @@ var corsairIcon = function(obj){
 	grd.addColorStop(0,'#2E0F00');
 	grd.addColorStop(1,'#CC6600');
 	
-    ctx.strokeStyle = 'black';
-	ctx.fillStyle = grd;	
+    ctx.strokeStyle = '#2E0F00';
+	ctx.fillStyle = grd;
+	ctx.lineWidth = 5;
+	ctx.lineJoin = 'miter';
+	ctx.miterLimit=5;
 	ctx.stroke();
     ctx.fill();
 	
@@ -151,19 +152,21 @@ var corsairIcon = function(obj){
 	
 	ctx.closePath();
 
+	ctx.lineWidth = 3;
+
 	ctx.stroke();
 	
 	//ZAGIEL
 	ctx.beginPath();
 	
 	ctx.moveTo(0, 0.2*canvasHeight);
-	ctx.quadraticCurveTo(0.5*canvasWidth, 0.3*canvasHeight, canvasWidth, 0.2*canvasHeight);
-	ctx.quadraticCurveTo(0.5*canvasWidth, 0.8*canvasHeight, 0, 0.2*canvasHeight);
+	ctx.quadraticCurveTo(0.5*canvasWidth, 0.3*canvasHeight + Math.sin(current_time * 5) * 10, canvasWidth, 0.2*canvasHeight);
+	ctx.quadraticCurveTo(0.5*canvasWidth, 0.8*canvasHeight + Math.sin(current_time * 5 + 0.5) * 10, 0, 0.2*canvasHeight);
 	
 	ctx.closePath();
 	
 	ctx.fillStyle = 'white';
-	ctx.stroke();
+	// ctx.stroke();
     ctx.fill();
 	}
 
