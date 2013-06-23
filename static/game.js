@@ -546,6 +546,38 @@ var tick = function(time) {
 		ctx.fillRect(-1000, -1000, 5000, 5000);
 	}
 
+	var draw_world_horizontal = function() {
+		draw_world();
+		if(camera.x + canvas.width / 2 > world_size) {
+			ctx.save();
+			ctx.translate(world_size, 0);
+			draw_world();
+			ctx.restore();
+		}
+		if(camera.x - canvas.width / 2 < 0) {
+			ctx.save();
+			ctx.translate(-world_size, 0);
+			draw_world();
+			ctx.restore();
+		}
+	}
+
+	draw_world_horizontal();
+	if(camera.y + canvas.height / 2 > world_size) {
+		ctx.save();
+		ctx.translate(0, world_size);
+		draw_world_horizontal();
+		ctx.restore();
+	}
+	if(camera.y - canvas.height / 2 < 0) {
+		ctx.save();
+		ctx.translate(0, -world_size);
+		draw_world_horizontal();
+		ctx.restore();
+	}
+
+	
+/*
 	ctx.translate(-world_size, -world_size);
 	draw_world();
 	ctx.translate(world_size, 0);
@@ -564,7 +596,7 @@ var tick = function(time) {
 	draw_world();
 	ctx.translate(world_size, 0);
 	draw_world();
-	
+*/	
 	ctx.restore();
 
 	draw_wind_particles();
