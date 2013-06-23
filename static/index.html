@@ -26,10 +26,11 @@ body {
 #points {
   position: fixed;
   top: 10px;
-  left: 10px;
   color: #ffe92b;
   font-size: 40px;
   text-shadow: 2px 2px 0 #e4a400;
+  width: 100%;
+  text-align: center;
 }
 #points:before {
   content: '$ ';
@@ -63,9 +64,15 @@ body {
   border-radius: 5px;
   box-shadow: 2px 2px 0 #a27a2c;
 }
+audio {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+}
 </style>
 <body>
 <canvas id="canvas"></canvas>
+<audio src="DoKashiteru_-_Recommencer.mp3" autoplay controls volume=50></audio>
 <div id="points">0</div>
 <div id="fps-meter">0 ms</div>
 <div id="power-ups">
