@@ -239,6 +239,7 @@ var draw_world = function() {
 
 	ctx.fillStyle = 'rgb(255, 255, 0)';
 	for(var key in game.treasures) {
+		circle(game.treasures[key]);
 		treasure_icon(game.treasures[key]);
 	}
 
