@@ -369,7 +369,11 @@ var tick = function(time) {
 				}
 			}
 			last_pad = clone(pad);
-
+			mvx = 0;
+			mvy = 0;
+			console.log(pad.axes[0]);
+			console.log(pad.axes[1]);
+						
 			socket.emit('move', { 
 				vx: pad.axes[0],
 				vy: pad.axes[1],
