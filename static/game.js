@@ -134,11 +134,6 @@ var tick = function(time) {
 	ctx.fillStyle = bg_pattern;
 	ctx.fillRect(-1000, -1000, 5000, 5000);
 
-	//for(var x = -1; x <= 2; ++x) {
-	//	for(var y = -1; y <= 2; ++y) {
-	//		ctx.drawImage(bg, x * 1024, y * 1024);
-	//	}
-	//}
 
 	ctx.translate(-world_size, -world_size);
 	draw_world();
