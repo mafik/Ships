@@ -5,6 +5,9 @@ var app = require('http').createServer(function (req, res) {
 	file.serve(req, res);
 });
 
+var speed_length = 200;
+var speed_cost = 100;
+
 var diff = require('./static/diff.js');
 
 var world_size = 2048;
@@ -45,6 +48,17 @@ setInterval(function() {
 		var vx = Number(pirate.vx);
 		var vy = Number(pirate.vy);
 
+		if(pirate.speed_buff) {
+			pirate.speed_buff -= 1;
+			var alpha = 1 + Math.sin(pirate.speed_buff / speed_length * Math.PI);
+			vx *= alpha;
+			vy *= alpha;
+			console.log('Speed buff ' + alpha);
+
+			if(pirate.speed_buff == 0) {
+				delete pirate.speed_buff;
+			}
+		}
 		pirate.x += vx;
 		pirate.y += vy;
 		pirate.x = ( pirate.x + world_size ) % world_size;
@@ -237,6 +251,14 @@ io.sockets.on('connection', function (socket) {
 		}
 	} );
 
-	
+	socket.on('speed', function() {
+		if(pirates[player].points < speed_cost) {
+			players[player].socket.emit('wind_fail');
+			return;
+		}
+		pirates[player].points -= speed_cost;
+		pirates[player].speed_buff = speed_length;
+		players[player].socket.emit('wind');
+	});
 
 });

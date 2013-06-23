@@ -40,6 +40,14 @@ socket.on('death', function() {
 	new Audio('bubbles.ogg').play();
 });
 
+socket.on('wind', function() {
+	new Audio('wind.ogg').play();
+});
+
+socket.on('wind_fail', function() {
+	new Audio('wind_fail.ogg').play();
+});
+
 var game = { treasures: {}, pirates: {}, corsairs: {}, updatedAt: 0, now: 0 };
 var me;
 
