@@ -83,7 +83,176 @@ var circle = function(obj) {
 	ctx.restore();
 }
 
+var another_pirate_Icon = function(obj){
+	ctx.save();	
+	var move = (game.now - game.updatedAt)/16;
+	ctx.translate(obj.x + move*obj.vx, obj.y + move*obj.vy);
+	//ctx.rotate(Math.atan2(me.x,me.y));
+	var lineWidth = 2;
+	var canvasWidth = 30;
+	var canvasHeight = 1.15*canvasWidth;
+    //var canvas = document.getElementById('corsair');
 
+	//	canvas.width = canvasWidth;
+	//	canvas.height = canvasHeight;
+	  
+//	ctx.rotate(Math.PI);
+	ctx.translate(-canvasWidth/2,-canvasHeight/2);
+	//LODKA
+    ctx.beginPath();
+	
+    ctx.moveTo(0.35*canvasWidth, lineWidth);
+	ctx.lineTo(0.65*canvasWidth, lineWidth);
+    ctx.quadraticCurveTo(0.85*canvasWidth, 0.4*canvasHeight , 0.5*canvasWidth, canvasHeight);
+	ctx.quadraticCurveTo(0.15*canvasWidth, 0.4*canvasHeight , 0.35*canvasWidth, lineWidth);
+	
+	ctx.closePath();
+	
+	var grd=ctx.createRadialGradient(0.45*canvasWidth, 0.5*canvasHeight,0.1*canvasWidth,0.45*canvasWidth, 0.5*canvasHeight,0.7*canvasWidth);
+	grd.addColorStop(0,'#2E0F00');
+	grd.addColorStop(1,'#CC6600');
+	
+    ctx.strokeStyle = '#2E0F00';
+	ctx.fillStyle = grd;
+	ctx.lineWidth = 5;
+	ctx.lineJoin = 'miter';
+	ctx.miterLimit=5;
+	ctx.stroke();
+    ctx.fill();
+	
+	//WIOSLA
+	ctx.beginPath();
+	
+	ctx.moveTo(0.45*canvasWidth, 0.3*canvasHeight);
+	ctx.lineTo(0.05*canvasWidth, 0.45*canvasHeight + Math.sin(current_time * 2) * 10);
+	
+	ctx.moveTo(0.45*canvasWidth, 0.4*canvasHeight);
+	ctx.lineTo(0.05*canvasWidth, 0.55*canvasHeight + Math.sin(current_time * 2) * 10);
+	
+	ctx.moveTo(0.45*canvasWidth, 0.5*canvasHeight);
+	ctx.lineTo(0.05*canvasWidth, 0.65*canvasHeight + Math.sin(current_time * 2) * 10);
+	
+	ctx.moveTo(0.45*canvasWidth, 0.6*canvasHeight);
+	ctx.lineTo(0.05*canvasWidth, 0.75*canvasHeight + Math.sin(current_time * 2) * 10);
+	
+	ctx.moveTo(0.55*canvasWidth, 0.3*canvasHeight);
+	ctx.lineTo(0.95*canvasWidth, 0.45*canvasHeight + Math.sin(current_time * 2) * 10);
+	                                 
+	ctx.moveTo(0.55*canvasWidth, 0.4*canvasHeight);
+	ctx.lineTo(0.95*canvasWidth, 0.55*canvasHeight + Math.sin(current_time * 2) * 10);
+	                                 
+	ctx.moveTo(0.55*canvasWidth, 0.5*canvasHeight);
+	ctx.lineTo(0.95*canvasWidth, 0.65*canvasHeight + Math.sin(current_time * 2) * 10);
+	                                 
+	ctx.moveTo(0.55*canvasWidth, 0.6*canvasHeight);
+	ctx.lineTo(0.95*canvasWidth, 0.75*canvasHeight + Math.sin(current_time * 2) * 10);
+	
+	ctx.closePath();
+
+	ctx.lineWidth = 3;
+
+	ctx.stroke();
+	
+	//ZAGIEL
+	ctx.beginPath();
+	
+	ctx.moveTo(0, 0.2*canvasHeight);
+	ctx.quadraticCurveTo(0.5*canvasWidth, 0.3*canvasHeight + Math.sin(current_time * 5) * 10, canvasWidth, 0.2*canvasHeight);
+	ctx.quadraticCurveTo(0.5*canvasWidth, 0.8*canvasHeight + Math.sin(current_time * 5 + 0.5) * 10, 0, 0.2*canvasHeight);
+	
+	ctx.closePath();
+	
+	ctx.fillStyle = 'gray';
+	// ctx.stroke();
+    ctx.fill();
+
+	ctx.restore();
+}
+var enemyIcon = function(obj){
+	ctx.save();	
+	var move = (game.now - game.updatedAt)/16;
+	ctx.translate(obj.x + move*obj.vx, obj.y + move*obj.vy);
+	ctx.rotate(Math.atan2(me.x,me.y));
+	var lineWidth = 2;
+	var canvasWidth = 30;
+	var canvasHeight = 1.15*canvasWidth;
+    //var canvas = document.getElementById('corsair');
+
+	//	canvas.width = canvasWidth;
+	//	canvas.height = canvasHeight;
+	  
+//	ctx.rotate(Math.PI);
+	ctx.translate(-canvasWidth/2,-canvasHeight/2);
+	//LODKA
+    ctx.beginPath();
+	
+    ctx.moveTo(0.35*canvasWidth, lineWidth);
+	ctx.lineTo(0.65*canvasWidth, lineWidth);
+    ctx.quadraticCurveTo(0.85*canvasWidth, 0.4*canvasHeight , 0.5*canvasWidth, canvasHeight);
+	ctx.quadraticCurveTo(0.15*canvasWidth, 0.4*canvasHeight , 0.35*canvasWidth, lineWidth);
+	
+	ctx.closePath();
+	
+	var grd=ctx.createRadialGradient(0.45*canvasWidth, 0.5*canvasHeight,0.1*canvasWidth,0.45*canvasWidth, 0.5*canvasHeight,0.7*canvasWidth);
+	grd.addColorStop(0,'#2E0F00');
+	grd.addColorStop(1,'#CC6600');
+	
+    ctx.strokeStyle = '#2E0F00';
+	ctx.fillStyle = grd;
+	ctx.lineWidth = 5;
+	ctx.lineJoin = 'miter';
+	ctx.miterLimit=5;
+	ctx.stroke();
+    ctx.fill();
+	
+	//WIOSLA
+	ctx.beginPath();
+	
+	ctx.moveTo(0.45*canvasWidth, 0.3*canvasHeight);
+	ctx.lineTo(0.05*canvasWidth, 0.45*canvasHeight + Math.sin(current_time * 2) * 10);
+	
+	ctx.moveTo(0.45*canvasWidth, 0.4*canvasHeight);
+	ctx.lineTo(0.05*canvasWidth, 0.55*canvasHeight + Math.sin(current_time * 2) * 10);
+	
+	ctx.moveTo(0.45*canvasWidth, 0.5*canvasHeight);
+	ctx.lineTo(0.05*canvasWidth, 0.65*canvasHeight + Math.sin(current_time * 2) * 10);
+	
+	ctx.moveTo(0.45*canvasWidth, 0.6*canvasHeight);
+	ctx.lineTo(0.05*canvasWidth, 0.75*canvasHeight + Math.sin(current_time * 2) * 10);
+	
+	ctx.moveTo(0.55*canvasWidth, 0.3*canvasHeight);
+	ctx.lineTo(0.95*canvasWidth, 0.45*canvasHeight + Math.sin(current_time * 2) * 10);
+	                                 
+	ctx.moveTo(0.55*canvasWidth, 0.4*canvasHeight);
+	ctx.lineTo(0.95*canvasWidth, 0.55*canvasHeight + Math.sin(current_time * 2) * 10);
+	                                 
+	ctx.moveTo(0.55*canvasWidth, 0.5*canvasHeight);
+	ctx.lineTo(0.95*canvasWidth, 0.65*canvasHeight + Math.sin(current_time * 2) * 10);
+	                                 
+	ctx.moveTo(0.55*canvasWidth, 0.6*canvasHeight);
+	ctx.lineTo(0.95*canvasWidth, 0.75*canvasHeight + Math.sin(current_time * 2) * 10);
+	
+	ctx.closePath();
+
+	ctx.lineWidth = 3;
+
+	ctx.stroke();
+	
+	//ZAGIEL
+	ctx.beginPath();
+	
+	ctx.moveTo(0, 0.2*canvasHeight);
+	ctx.quadraticCurveTo(0.5*canvasWidth, 0.3*canvasHeight + Math.sin(current_time * 5) * 10, canvasWidth, 0.2*canvasHeight);
+	ctx.quadraticCurveTo(0.5*canvasWidth, 0.8*canvasHeight + Math.sin(current_time * 5 + 0.5) * 10, 0, 0.2*canvasHeight);
+	
+	ctx.closePath();
+	
+	ctx.fillStyle = 'red';
+	// ctx.stroke();
+    ctx.fill();
+
+	ctx.restore();
+}
 
 var corsairIcon = function(obj){
 	
@@ -259,12 +428,13 @@ var draw_world = function() {
 
 	ctx.fillStyle = 'rgb(255, 0, 0)';
 	for(var key in game.corsairs) {
-		circle(game.corsairs[key]);
+		enemyIcon(game.corsairs[key]);
 	}
 
 	ctx.fillStyle = 'rgb(0, 155, 0)';
 	for(var key in game.pirates) {
-		circle(game.pirates[key]);
+		if(game.pirates[key]!=me)
+		another_pirate_Icon(game.pirates[key]);
 	}
 
 	ctx.fillStyle = 'rgb(12, 155, 0)';
