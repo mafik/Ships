@@ -50,7 +50,9 @@ socket.on('wind_fail', function() {
 
 var game = { treasures: {}, pirates: {}, corsairs: {}, updatedAt: 0, now: 0 };
 var me;
+var treshold_rotate=0.1;
 
+var mrot = 0.000;
 var canvas = document.getElementById('canvas');
 canvas.style.background = '#8ad';
 var ctx = canvas.getContext('2d');
@@ -81,6 +83,98 @@ var circle = function(obj) {
 	ctx.restore();
 }
 
+
+
+var corsairIcon = function(obj){
+	
+	var lineWidth = 2;
+	var canvasWidth = 50;
+	var canvasHeight = 1.15*canvasWidth;
+	
+    //var canvas = document.getElementById('corsair');
+
+	//	canvas.width = canvasWidth;
+	//	canvas.height = canvasHeight;
+	  
+	ctx.lineWidth = lineWidth;
+	ctx.translate(obj.x, obj.y);
+	
+	ctx.rotate(mrot || 0);
+	ctx.rotate(Math.PI);
+	ctx.translate(-canvasWidth/2,-canvasHeight/2);
+	//LODKA
+    ctx.beginPath();
+	
+    ctx.moveTo(0.35*canvasWidth, lineWidth);
+	ctx.lineTo(0.65*canvasWidth, lineWidth);
+    ctx.quadraticCurveTo(0.85*canvasWidth, 0.4*canvasHeight , 0.5*canvasWidth, canvasHeight);
+	ctx.moveTo(0.35*canvasWidth, lineWidth);
+	ctx.quadraticCurveTo(0.15*canvasWidth, 0.4*canvasHeight , 0.5*canvasWidth, canvasHeight);
+	
+	ctx.closePath();
+	
+	var grd=ctx.createRadialGradient(0.45*canvasWidth, 0.5*canvasHeight,0.1*canvasWidth,0.45*canvasWidth, 0.5*canvasHeight,0.7*canvasWidth);
+	grd.addColorStop(0,'#2E0F00');
+	grd.addColorStop(1,'#CC6600');
+	
+    ctx.strokeStyle = 'black';
+	ctx.fillStyle = grd;	
+	ctx.stroke();
+    ctx.fill();
+	
+	//WIOSLA
+	ctx.beginPath();
+	
+	ctx.moveTo(0.45*canvasWidth, 0.3*canvasHeight);
+	ctx.lineTo(0.05*canvasWidth, 0.45*canvasHeight);
+	
+	ctx.moveTo(0.45*canvasWidth, 0.4*canvasHeight);
+	ctx.lineTo(0.05*canvasWidth, 0.55*canvasHeight);
+	
+	ctx.moveTo(0.45*canvasWidth, 0.5*canvasHeight);
+	ctx.lineTo(0.05*canvasWidth, 0.65*canvasHeight);
+	
+	ctx.moveTo(0.45*canvasWidth, 0.6*canvasHeight);
+	ctx.lineTo(0.05*canvasWidth, 0.75*canvasHeight);
+	
+	ctx.moveTo(0.55*canvasWidth, 0.3*canvasHeight);
+	ctx.lineTo(0.95*canvasWidth, 0.45*canvasHeight);
+	                                 
+	ctx.moveTo(0.55*canvasWidth, 0.4*canvasHeight);
+	ctx.lineTo(0.95*canvasWidth, 0.55*canvasHeight);
+	                                 
+	ctx.moveTo(0.55*canvasWidth, 0.5*canvasHeight);
+	ctx.lineTo(0.95*canvasWidth, 0.65*canvasHeight);
+	                                 
+	ctx.moveTo(0.55*canvasWidth, 0.6*canvasHeight);
+	ctx.lineTo(0.95*canvasWidth, 0.75*canvasHeight);
+	
+	ctx.closePath();
+
+	ctx.stroke();
+	
+	//ZAGIEL
+	ctx.beginPath();
+	
+	ctx.moveTo(0, 0.2*canvasHeight);
+	ctx.quadraticCurveTo(0.5*canvasWidth, 0.3*canvasHeight, canvasWidth, 0.2*canvasHeight);
+	ctx.quadraticCurveTo(0.5*canvasWidth, 0.8*canvasHeight, 0, 0.2*canvasHeight);
+	
+	ctx.closePath();
+	
+	ctx.fillStyle = 'white';
+	ctx.stroke();
+    ctx.fill();
+	}
+
+
+
+var draw_pirate = function(obj) {
+	ctx.save();
+	corsairIcon(obj);
+	ctx.fill();
+	ctx.restore();
+}
 var draw_world = function() {
 
 	ctx.fillStyle = 'rgb(255, 255, 0)';
@@ -98,6 +192,10 @@ var draw_world = function() {
 		circle(game.pirates[key]);
 	}
 
+	ctx.fillStyle = 'rgb(12, 155, 0)';
+	if(me){
+		draw_pirate(me);
+	}
 };
 
 var camera = {x: 0, y: 0};
@@ -178,15 +276,22 @@ var tick = function(time) {
 
 	if(left_key || right_key || up_key || down_key) {
 
+		if(left_key) mrot -= treshold_rotate;
+		if(right_key) mrot += treshold_rotate;
+		mvy = 0;	
 		mvx = 0;
-		if(left_key) mvx -= 1;
-		if(right_key) mvx += 1;
-		mvy = 0;
-		if(up_key) mvy -= 1;
-		if(down_key) mvy += 1;
+		if(up_key){ 
+			mvy -= Math.cos(mrot);
+			mvx -=-1*Math.sin(mrot);
+		}
+		if(down_key){ 
+			mvy += Math.cos(mrot);
+			mvx +=-1*Math.sin(mrot);
+		}
 		socket.emit('move', { 
 			vx: mvx,
-			vy: mvy
+			vy: mvy,
+			alpha:mrot
 		});
 
 	} else if(me && navigator.webkitGetGamepads) {
@@ -203,7 +308,8 @@ var tick = function(time) {
 
 			socket.emit('move', { 
 				vx: pad.axes[0],
-				vy: pad.axes[1]
+				vy: pad.axes[1],
+				alpha:mrot
 			});
 		}
 	}
@@ -242,15 +348,25 @@ onkeydown = function(e) {
 		} else if(code == 3) {
 			down_key = true;
 		}
+		if(left_key) mrot -= treshold_rotate;
+		if(right_key) mrot += treshold_rotate;
+		if(mrot > Math.PI * 2 || mrot < -1 * Math.PI * 2)
+			mrot = 0.0;
+		mvy = 0;	
 		mvx = 0;
-		if(left_key) mvx -= 1;
-		if(right_key) mvx += 1;
-		mvy = 0;
-		if(up_key) mvy -= 1;
-		if(down_key) mvy += 1;
+		console.log(treshold_rotate);
+		if(up_key){ 
+			mvy -= Math.cos(mrot);
+			mvx -= -1*Math.sin(mrot);
+		}
+		if(down_key){ 
+			mvy += Math.cos(mrot);
+			mvx += -1*Math.sin(mrot);
+		}
 		socket.emit('move', { 
 			vx: mvx,
-			vy: mvy
+			vy: mvy,
+			alpha:mrot
 		});
 		return;
 	}
@@ -277,10 +393,8 @@ onkeyup = function(e) {
 		} else if(code == 3) {
 			down_key = false;
 		}
-		mvx = 0;
-		if(left_key) mvx -= 1;
-		if(right_key) mvx += 1;
 		mvy = 0;
+		mvx = 0;
 		if(up_key) mvy -= 1;
 		if(down_key) mvy += 1;
 		socket.emit('move', { 
