@@ -389,28 +389,23 @@ var treasure_icon = function(obj){
 	
 	var move = (game.now - game.updatedAt)/16;
     var lineWidth = 2;
-	var canvasWidth = 50;
-	var canvasHeight = 0.8*canvasWidth;
+	var w = 50;
+	var h = 0.8*w;
 
 	ctx.lineWidth = lineWidth;
-	
 	ctx.translate(obj.x + move*obj.vx, obj.y + move*obj.vy);
-
 	ctx.rotate(Math.sin(current_time + obj.x) / 4);
-
-	ctx.translate(-canvasWidth/2,-canvasHeight/2);
-
-
+	ctx.translate(-w/2,-h/2);
 
 	//DIAMENT
 	ctx.beginPath();
 	
-    ctx.moveTo(0.25*canvasWidth, lineWidth);
-    ctx.lineTo(0.75*canvasWidth, lineWidth);
-	ctx.lineTo(canvasWidth, 0.25*canvasHeight);
-	ctx.lineTo(0.5*canvasWidth, canvasHeight);
-	ctx.lineTo(0, 0.25*canvasHeight);
-	ctx.lineTo(0.25*canvasWidth, lineWidth);
+    ctx.moveTo(0.25*w, lineWidth);
+    ctx.lineTo(0.75*w, lineWidth);
+	ctx.lineTo(w, 0.25*h);
+	ctx.lineTo(0.5*w, h);
+	ctx.lineTo(0, 0.25*h);
+	ctx.lineTo(0.25*w, lineWidth);
 	
 	ctx.closePath();
 	
@@ -423,26 +418,25 @@ var treasure_icon = function(obj){
 	
 	ctx.beginPath();
 	
-    ctx.moveTo(0.25*canvasWidth, lineWidth);
-    ctx.lineTo(0.75*canvasWidth, lineWidth);
-	ctx.lineTo(canvasWidth, 0.25*canvasHeight);
-	ctx.lineTo(0.5*canvasWidth, canvasHeight);
-	ctx.lineTo(0, 0.25*canvasHeight);
-	ctx.lineTo(0.25*canvasWidth, lineWidth);
+    ctx.moveTo(0.25*w, lineWidth);
+    ctx.lineTo(0.75*w, lineWidth);
+	ctx.lineTo(w, 0.25*h);
+	ctx.lineTo(0.5*w, h);
+	ctx.lineTo(0, 0.25*h);
+	ctx.lineTo(0.25*w, lineWidth);
 	
-	ctx.moveTo(0, 0.25*canvasHeight);
-	ctx.lineTo(0.30*canvasWidth, 0.35*canvasHeight);
-	ctx.lineTo(0.70*canvasWidth, 0.35*canvasHeight);
-	ctx.lineTo(canvasWidth, 0.25*canvasHeight);
-    ctx.lineTo(0.75*canvasWidth, lineWidth);
-	ctx.lineTo(0.25*canvasWidth, lineWidth);
-
+	ctx.moveTo(0, 0.25*h);
+	ctx.lineTo(0.30*w, 0.35*h);
+	ctx.lineTo(0.70*w, 0.35*h);
+	ctx.lineTo(w, 0.25*h);
+    ctx.lineTo(0.75*w, lineWidth);
+	ctx.lineTo(0.25*w, lineWidth);
 	
-    ctx.moveTo(0.35*canvasWidth, lineWidth);
-	ctx.lineTo(0.30*canvasWidth, 0.35*canvasHeight);
-	ctx.lineTo(0.5*canvasWidth, canvasHeight);
-	ctx.lineTo(0.70*canvasWidth, 0.35*canvasHeight);
-	ctx.lineTo(0.60*canvasWidth, lineWidth);
+    ctx.moveTo(0.35*w, lineWidth);
+	ctx.lineTo(0.30*w, 0.35*h);
+	ctx.lineTo(0.5*w, h);
+	ctx.lineTo(0.70*w, 0.35*h);
+	ctx.lineTo(0.60*w, lineWidth);
 		
 	ctx.closePath();
 	
@@ -450,13 +444,7 @@ var treasure_icon = function(obj){
 	ctx.fillStyle = '#CC0000';	
 	ctx.stroke();
     ctx.fill();	
-	
-
-
-
 	ctx.restore();
-
-
 }
 
 var draw_pirate = function(obj) {
