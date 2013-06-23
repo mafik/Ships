@@ -11,7 +11,7 @@ body {
   color: white;
   font-family: 'Rye', sans-serif;
 }
-canvas {
+* {
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -31,16 +31,50 @@ canvas {
   font-size: 40px;
   text-shadow: 2px 2px 0 #e4a400;
 }
-
 #points:before {
   content: '$ ';
 }
-
+#power-ups {
+  position: fixed;
+  left: 0px;
+  bottom: 0px;
+  font-size: 15px;
+}
+#power-ups > div {
+  position: relative;
+  margin: 10px;
+}
+.price {
+  position: absolute;
+  bottom: 0px;
+  right: 5px;
+  color: #463616;
+  background:  #fff4ac;
+}
+.price:before {
+  content: '$ ';
+}
+#power-ups img {
+  width: 64px;
+  height: 64px;
+  vertical-align: middle;
+  background: #fff4ac;
+  padding: 5px;
+  border-radius: 5px;
+  box-shadow: 2px 2px 0 #a27a2c;
+}
 </style>
 <body>
 <canvas id="canvas"></canvas>
 <div id="points">0</div>
 <div id="fps-meter">0 ms</div>
+<div id="power-ups">
+  <div onclick="powerup(4)" title="Sztuka wojenna"><div class="price">1000</div><img src="go.png" /></div>
+  <div onclick="powerup(3)" title="Lembasy"><div class="price">700</div><img src="leaf.png" /></div>
+  <div onclick="powerup(2)" title="Gong wojenny"><div class="price">500</div><img src="gong.png" /></div>
+  <div onclick="powerup(1)" title="Strzał!"><div class="price">100</div><img src="shoot.png" /></div>
+  <div onclick="powerup(0)" title="Dobry wiatr!"><div class="price">100</div><img src="wind.png" /></div>
+</div>
 
 <script src="socket.io/socket.io.js"></script>
 <script src="diff.js"></script>

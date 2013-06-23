@@ -189,6 +189,15 @@ var tick = function(time) {
 	} else if(me && navigator.webkitGetGamepads) {
 		var pad = navigator.webkitGetGamepads()[0];
 		if(pad) {
+			if(typeof last_pad !== 'undefined') {
+				for(var i = 0; i < pad.buttons.length; ++i) {
+					if(pad.buttons[i] > 0.5 && last_pad.buttons[i] < 0.5 ) {
+						powerup(i);
+					}
+				}
+			}
+			last_pad = clone(pad);
+
 			socket.emit('move', { 
 				vx: pad.axes[0],
 				vy: pad.axes[1]
@@ -203,8 +212,20 @@ var tick = function(time) {
 	document.getElementById('fps-meter').innerText = (function_end - function_start) + ' ms';
 };
 animate(tick);
+var last_pad;
 
 var up_key = false, left_key = false, right_key = false, down_key = false;
+
+var powerup_wind = function() {
+	socket.emit('speed');
+};
+
+var powerup = function(number) {
+	if(number == 0) {
+		powerup_wind();
+	}
+	// TODO: reszta powerupów
+};
 
 onkeydown = function(e) {
 	if( e.which >= 37 && e.which < 41) {
@@ -229,6 +250,11 @@ onkeydown = function(e) {
 			vy: mvy
 		});
 		return;
+	}
+
+	if( e.which >= 49 && e.which < 54) {
+		var code = e.which - 49;
+		powerup(code);
 	}
 	
 	if( e.which == 84 && e.shiftKey ) {
