@@ -63,6 +63,8 @@ setInterval(function() {
 					alpha: Math.random() * 2 * Math.PI
 				};
 
+				pirate.points += 1000;
+
 				corsairs[uid()] = {
 					x: Math.random() * world_size,
 					y: Math.random() * world_size,
@@ -138,7 +140,8 @@ setInterval(function() {
 
 				pirates[key2] = {
 					x: Math.random() * world_size,
-					y: Math.random() * world_size
+					y: Math.random() * world_size,
+					points: 0
 				};
 
 				for(key3 in players) {
@@ -198,7 +201,8 @@ io.sockets.on('connection', function (socket) {
 			id: player,
 			x: world_size*Math.random(),
 			y: world_size*Math.random(),
-			alpha: 0
+			alpha: 0,
+			points: 0
 		};
 
 		players[player] = {

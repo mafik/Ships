@@ -20,6 +20,9 @@ var update = function(msg) {
 	corsairs = msg.corsairs;
 	if(localStorage.player_id in pirates) {
 		me = pirates[localStorage.player_id];
+		var str = "" + me.points;
+		str = str.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+		document.getElementById('points').textContent = str;
 	}
 };
 
