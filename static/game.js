@@ -1,5 +1,5 @@
 
-var world_size = 2000;
+var world_size = 2048;
 
 var uid = function() {
 	return 'xxxxxx'.replace(/x/g, function() {
