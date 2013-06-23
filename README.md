@@ -13,3 +13,7 @@ And run server with
     npm start
 
 By default server should work on `localhost:1337`
+
+## Thanks
+
+To ~borysses for http://borysses.deviantart.com/art/Water-and-ice-2-117169750 .

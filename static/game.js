@@ -27,6 +27,10 @@ socket.on('success', function() {
 	new Audio('collectcoin.ogg').play();
 });
 
+socket.on('death', function() {
+	new Audio('bubbles.ogg').play();
+});
+
 var treasures = {}, pirates = {}, corsairs = {};
 var me;
 
@@ -99,6 +103,9 @@ camera.update = function(dt) {
 	}
 };
 
+var bg = new Image();
+bg.src = 'bg.jpg';
+
 var current_time = 0;
 var tick = function(time) {
 	animate(tick); // schedule next frame
@@ -118,6 +125,12 @@ var tick = function(time) {
 	ctx.fillRect(-5, -5, 10, 10);
 
 	ctx.translate(-camera.x, -camera.y);
+
+	for(var x = -1; x <= 2; ++x) {
+		for(var y = -1; y <= 2; ++y) {
+			ctx.drawImage(bg, x * 1024, y * 1024);
+		}
+	}
 
 	ctx.translate(-world_size, -world_size);
 	draw_world();
@@ -140,16 +153,26 @@ var tick = function(time) {
 	
 	ctx.restore();
 
+	if(left_key || right_key || up_key || down_key) {
 
-	// Joystick
-	if(me && navigator.webkitGetGamepads) {
+		mvx = 0;
+		if(left_key) mvx -= 1;
+		if(right_key) mvx += 1;
+		mvy = 0;
+		if(up_key) mvy -= 1;
+		if(down_key) mvy += 1;
+		socket.emit('move', { 
+			vx: mvx,
+			vy: mvy
+		});
+
+	} else if(me && navigator.webkitGetGamepads) {
 		var pad = navigator.webkitGetGamepads()[0];
 		if(pad) {
 			socket.emit('move', { 
 				vx: pad.axes[0],
 				vy: pad.axes[1]
 			});
-			// console.log('move', pad.axes[0], pad.axes[1]);
 		}
 	}
 
@@ -158,7 +181,57 @@ var tick = function(time) {
 };
 animate(tick);
 
+var up_key = false, left_key = false, right_key = false, down_key = false;
 
+onkeydown = function(e) {
+	var code = e.which - 37;
+	if(code >= 0 && code < 4) {
+		if(code == 0) {
+			left_key = true;
+		} else if(code == 1) {
+			up_key = true;
+		} else if(code == 2) {
+			right_key = true;
+		} else if(code == 3) {
+			down_key = true;
+		}
+		mvx = 0;
+		if(left_key) mvx -= 1;
+		if(right_key) mvx += 1;
+		mvy = 0;
+		if(up_key) mvy -= 1;
+		if(down_key) mvy += 1;
+		socket.emit('move', { 
+			vx: mvx,
+			vy: mvy
+		});
+	}
+};
+
+onkeyup = function(e) {
+	var code = e.which - 37;
+	if(code >= 0 && code < 4) {
+		if(code == 0) {
+			left_key = false;
+		} else if(code == 1) {
+			up_key = false;
+		} else if(code == 2) {
+			right_key = false;
+		} else if(code == 3) {
+			down_key = false;
+		}
+		mvx = 0;
+		if(left_key) mvx -= 1;
+		if(right_key) mvx += 1;
+		mvy = 0;
+		if(up_key) mvy -= 1;
+		if(down_key) mvy += 1;
+		socket.emit('move', { 
+			vx: mvx,
+			vy: mvy
+		});
+	}
+};
 
 onresize = function(e) {
 	canvas.width = window.innerWidth;

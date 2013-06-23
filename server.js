@@ -24,7 +24,7 @@ var treasures = {};
 var pirates = {};
 var corsairs = {};
 
-for(var i = 0; i < 5; ++i) {
+for(var i = 0; i < 50; ++i) {
 	treasures[i] = { 
 		x: Math.random() * world_size, 
 		y: Math.random() * world_size, 
@@ -38,10 +38,13 @@ setInterval(function() {
 	var key, key2, key3, pirate, treasure, player, corsair;
 	for(key in pirates) {
 		pirate = pirates[key];
-		if(pirate.vx)
-			pirate.x += pirate.vx;
-		if(pirate.vy)
-			pirate.y += pirate.vy;
+		var vx = Number(pirate.vx);
+		var vy = Number(pirate.vy);
+		var l = Math.max(1, Math.sqrt(vx*vx + vy*vy));
+		if(l) {
+			pirate.x += vx / l;
+			pirate.y += vy / l;
+		}
 
 		pirate.x = ( pirate.x + world_size ) % world_size;
 		pirate.y = ( pirate.y + world_size ) % world_size;
@@ -62,7 +65,9 @@ setInterval(function() {
 					x: Math.random() * world_size,
 					y: Math.random() * world_size,
 					alpha: Math.random() * 2 * Math.PI,
-					target: key
+					target: key,
+					tangent: (Math.random() - 0.5) * Math.PI,
+					speed: Math.random()/2 + 0.4
 				};
 
 				for(key3 in players) {
@@ -81,6 +86,11 @@ setInterval(function() {
 		corsair = corsairs[key];
 		pirate = pirates[corsair.target];
 
+		if(typeof pirate === 'undefined') {
+			delete corsairs[key];
+			continue;
+		}
+
 		var dx = pirate.x - corsair.x;
 		if(Math.abs(dx + world_size) < Math.abs(dx)) {
 			dx += world_size;
@@ -98,8 +108,48 @@ setInterval(function() {
 		dx /= l;
 		dy /= l;
 		
+		var alpha = Math.atan2(dy, dx) + corsair.tangent;
+		dx = Math.cos(alpha) * corsair.speed;
+		dy = Math.sin(alpha) * corsair.speed;
+
 		corsair.x += dx;
 		corsair.y += dy;
+
+
+		corsair.x = ( corsair.x + world_size ) % world_size;
+		corsair.y = ( corsair.y + world_size ) % world_size;
+
+		for(key2 in pirates) {
+
+			pirate = pirates[key2];
+			var dx = pirate.x - corsair.x;
+			var dy = pirate.y - corsair.y;
+			if(Math.sqrt(dx*dx + dy*dy) < 20) {
+
+				delete pirates[key2];
+
+				for(key3 in corsairs) {
+					if(corsairs[key3].target == key2) {
+						delete corsairs[key3];
+					}
+				}
+
+				pirates[key2] = {
+					x: Math.random() * world_size,
+					y: Math.random() * world_size
+				};
+
+				for(key3 in players) {
+					player = players[key3];
+					if(key3 == key2) {
+						player.socket.emit('death');
+					} else {
+						player.socket.emit('other_death');
+					}
+				}
+			}
+
+		}
 	}
 
 	for( key in players ) {
@@ -109,7 +159,7 @@ setInterval(function() {
 			treasures: treasures
 		});
 	}
-}, 10);
+}, 16);
 
 io.sockets.on('connection', function (socket) {
     var player = undefined;
