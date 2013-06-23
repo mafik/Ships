@@ -14,14 +14,26 @@ socket.on('connect', function () {
 	socket.emit('hello', localStorage.player_id);
 });
 
-socket.on('update', function(msg) {
+var update = function(msg) {
 	treasures = msg.treasures;
 	pirates = msg.pirates;
 	corsairs = msg.corsairs;
 	if(localStorage.player_id in pirates) {
 		me = pirates[localStorage.player_id];
 	}
+};
+
+socket.on('delta', function(delta) {
+	var last = {
+		pirates: pirates,
+		corsairs: corsairs,
+		treasures: treasures
+	}
+	var fixed = apply_diff(last, delta);
+	update(fixed);
 });
+
+socket.on('update', update);
 
 socket.on('success', function() {
 	new Audio('collectcoin.ogg').play();
