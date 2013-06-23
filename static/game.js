@@ -15,11 +15,10 @@ socket.on('connect', function () {
 });
 
 var update = function(msg) {
-	treasures = msg.treasures;
-	pirates = msg.pirates;
-	corsairs = msg.corsairs;
-	if(localStorage.player_id in pirates) {
-		me = pirates[localStorage.player_id];
+	game = msg;
+	game.updatedAt = (new Date).getTime();
+	if(localStorage.player_id in game.pirates) {
+		me = game.pirates[localStorage.player_id];
 		var str = "" + me.points;
 		str = str.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
 		document.getElementById('points').textContent = str;
@@ -27,12 +26,7 @@ var update = function(msg) {
 };
 
 socket.on('delta', function(delta) {
-	var last = {
-		pirates: pirates,
-		corsairs: corsairs,
-		treasures: treasures
-	}
-	var fixed = apply_diff(last, delta);
+	var fixed = apply_diff(game, delta);
 	update(fixed);
 });
 
@@ -46,7 +40,7 @@ socket.on('death', function() {
 	new Audio('bubbles.ogg').play();
 });
 
-var treasures = {}, pirates = {}, corsairs = {};
+var game = { treasures: {}, pirates: {}, corsairs: {}, updatedAt: 0, now: 0 };
 var me;
 
 var canvas = document.getElementById('canvas');
@@ -69,7 +63,8 @@ var get_image = function(url) {
 
 var circle = function(obj) {
 	ctx.save();
-	ctx.translate(obj.x, obj.y);
+	var move = (game.now - game.updatedAt)/16;
+	ctx.translate(obj.x + move*obj.vx, obj.y + move*obj.vy);
 	ctx.beginPath();
 	ctx.rotate(obj.alpha || 0);
 	ctx.lineTo(0, 0);
@@ -81,18 +76,18 @@ var circle = function(obj) {
 var draw_world = function() {
 
 	ctx.fillStyle = 'rgb(255, 255, 0)';
-	for(var key in treasures) {
-		circle(treasures[key]);
+	for(var key in game.treasures) {
+		circle(game.treasures[key]);
 	}
 
 	ctx.fillStyle = 'rgb(255, 0, 0)';
-	for(var key in corsairs) {
-		circle(corsairs[key]);
+	for(var key in game.corsairs) {
+		circle(game.corsairs[key]);
 	}
 
 	ctx.fillStyle = 'rgb(0, 155, 0)';
-	for(var key in pirates) {
-		circle(pirates[key]);
+	for(var key in game.pirates) {
+		circle(game.pirates[key]);
 	}
 
 };
@@ -132,7 +127,7 @@ var tick = function(time) {
 	animate(tick); // schedule next frame
 
 	time = time / 1000; // animation time
-	var now = (new Date).getTime() / 1000; // calendar time
+	game.now = (new Date).getTime();
 
 	camera.update(time - current_time);
 
