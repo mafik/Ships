@@ -47,7 +47,7 @@ var treasures = {}, pirates = {}, corsairs = {};
 var me;
 
 var canvas = document.getElementById('canvas');
-canvas.style.background = '#106';
+canvas.style.background = '#8ad';
 var ctx = canvas.getContext('2d');
 
 var animate = window.requestAnimationFrame       ||
@@ -121,6 +121,7 @@ var bg_pattern = 'transparent';
 bg.onload = function() {
 	bg_pattern = ctx.createPattern(bg, 'repeat');
 }
+var showBackground = true;
 
 var current_time = 0;
 var tick = function(time) {
@@ -143,9 +144,10 @@ var tick = function(time) {
 
 	ctx.translate(-camera.x, -camera.y);
 
-	ctx.fillStyle = bg_pattern;
-	ctx.fillRect(-1000, -1000, 5000, 5000);
-
+	if( showBackground ) {
+		ctx.fillStyle = bg_pattern;
+		ctx.fillRect(-1000, -1000, 5000, 5000);
+	}
 
 	ctx.translate(-world_size, -world_size);
 	draw_world();
@@ -202,8 +204,8 @@ animate(tick);
 var up_key = false, left_key = false, right_key = false, down_key = false;
 
 onkeydown = function(e) {
-	var code = e.which - 37;
-	if(code >= 0 && code < 4) {
+	if( e.which >= 37 && e.which < 41) {
+		var code = e.which - 37;
 		if(code == 0) {
 			left_key = true;
 		} else if(code == 1) {
@@ -223,6 +225,11 @@ onkeydown = function(e) {
 			vx: mvx,
 			vy: mvy
 		});
+		return;
+	}
+	
+	if( e.which == 84 && e.shiftKey ) {
+		showBackground = !showBackground;
 	}
 };
 
