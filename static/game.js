@@ -40,8 +40,45 @@ socket.on('death', function() {
 	new Audio('bubbles.ogg').play();
 });
 
+var wind_particles = [];
+var wind_count = 0;
+
+var add_wind_particle = function() {
+	wind_particles.push({
+		start: current_time,
+		x: Math.random() * canvas.width,
+		y: Math.random() * canvas.height,
+	});
+	if(--wind_count)
+		setTimeout(add_wind_particle, 30);
+};
+
+var draw_wind_particles = function() {
+	for(var i = 0; i < wind_particles.length; ++i) {
+		var particle = wind_particles[i];
+		var age = current_time - particle.start;
+		if(age > 1) {
+			wind_particles.splice(i, 1);
+			--i;
+			continue;
+		}
+		particle.x += me.vx * 2;
+		particle.y += me.vy * 2;
+		var alpha = Math.sin(age / 1 * Math.PI);
+		ctx.strokeStyle = 'rgba(255, 255, 255, '+alpha+')';
+		ctx.beginPath();
+		ctx.moveTo(particle.x, particle.y);
+		ctx.lineWidth = alpha * 2;
+		ctx.lineTo(particle.x + me.vx * 30 * alpha, particle.y + me.vy * 30 * alpha);
+		//ctx.arc(particle.x, particle.y, alpha * 5, 0, 2*Math.PI, false);
+		ctx.stroke();
+	}
+};
+
 socket.on('wind', function() {
 	new Audio('wind.ogg').play();
+	wind_count = 50;
+	add_wind_particle();
 });
 
 socket.on('wind_fail', function() {
@@ -485,6 +522,8 @@ var tick = function(time) {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 	ctx.save();
+
+
 	ctx.translate(canvas.width / 2, canvas.height / 2);
 	ctx.rotate(Math.sin(time) / 20);
 
@@ -518,6 +557,8 @@ var tick = function(time) {
 	draw_world();
 	
 	ctx.restore();
+
+	draw_wind_particles();
 
 	if(left_key || right_key || up_key || down_key) {
 
